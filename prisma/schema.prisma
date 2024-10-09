@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                 String    @id @default(cuid())
+  username           String    @unique
+  password           String
+  firstName          String
+  lastName           String
+  dateOfBirth        String
+  email              String    @unique
+  phone              String    @unique
+  school             String
+  gender             String
+  profileDescription String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime? @updatedAt
+  mediaId            String?   @unique
+  profilePicture     Media?    @relation(fields: [mediaId], references: [id])
+
+  roleId String
+  role   Role   @relation(fields: [roleId], references: [id])
+
+  teacher Teacher?
+  student Student?
+}
+
+model Role {
+  id       String @id @default(cuid())
+  roleName String @unique
+  users    User[]
+}
+
+model Teacher {
+  id                    String  @id @default(cuid())
+  subjectSpecialization String?
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  classrooms Classroom[]
+}
+
+model Student {
+  id String @id @default(cuid())
+
+  userId String? @unique
+  user   User?   @relation(fields: [userId], references: [id])
+
+  answers Answer[]
+
+  classrooms StudentInClassroom[]
+
+  groups StudentInGroup[]
+}
+
+model Classroom {
+  id            String    @id @default(cuid())
+  classroomName String
+  description   String?
+  capacity      Int
+  classroomCode String
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime? @updatedAt
+  deletedAt     DateTime?
+
+  teacherId String
+  teacher   Teacher @relation(fields: [teacherId], references: [id])
+
+  groups      Group[]
+  sessions    Session[]
+  materials   Material[]
+  assignments Assignment[]
+
+  students StudentInClassroom[]
+
+  StudentInGroup StudentInGroup[]
+}
+
+model Group {
+  id        String @id @default(cuid())
+  groupName String
+
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  students StudentInGroup[]
+}
+
+model Session {
+  id          String        @id @default(cuid())
+  topic       String
+  description String
+  status      SessionStatus
+  sessionDate DateTime
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime?     @updatedAt
+  deletedAt   DateTime?
+
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+}
+
+model Material {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  createdAt   DateTime @default(now())
+
+  docFileId String   @unique
+  docFile   DocFile? @relation(fields: [docFileId], references: [id])
+
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  questions Question[]
+}
+
+model DocFile {
+  id        String    @id @default(cuid())
+  type      DocType
+  url       String
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  material Material?
+
+  submissionId String?
+  submission   Submission? @relation(fields: [submissionId], references: [id])
+}
+
+model Assignment {
+  id             String         @id @default(cuid())
+  startTime      DateTime
+  dueTime        DateTime
+  title          String
+  description    String
+  assignmentType AssignmentType
+
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  submissions Submission[]
+  questions   Question[]
+}
+
+model Submission {
+  id        String           @id @default(cuid())
+  status    SubmissionStatus
+  createdAt DateTime         @default(now())
+
+  docFile DocFile[]
+
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+}
+
+model Question {
+  id            String       @id @default(cuid())
+  questionType  QuestionType
+  responseType  ResponseType
+  questionTitle String
+  content       String?
+  timeResponse  DateTime?
+  createdAt     DateTime?    @default(now())
+  updatedAt     DateTime?    @updatedAt
+
+  orderInSlide Int?
+
+  medias  Media[]
+  answers Answer[]
+  options Option[]
+
+  assignmentId String?
+  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
+
+  materialId String?
+  material   Material? @relation(fields: [materialId], references: [id])
+}
+
+model Answer {
+  id        String  @id @default(cuid())
+  content   String
+  isCorrect Boolean
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+
+  selectedOptionId String?
+  selectedOption   Option? @relation(fields: [selectedOptionId], references: [id])
+}
+
+model Option {
+  id              String  @id @default(cuid())
+  content         String
+  isCorrectAnswer Boolean
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+
+  answer Answer[]
+}
+
+model Media {
+  id        String    @id @default(cuid())
+  type      MediaType
+  url       String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  user       User?
+  questionId String?
+  question   Question? @relation(fields: [questionId], references: [id])
+}
+
+model StudentInClassroom {
+  studentId   String
+  student     Student   @relation(fields: [studentId], references: [id])
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  totalScore Decimal @default(0)
+
+  @@id([studentId, classroomId])
+}
+
+model StudentInGroup {
+  studentId   String
+  student     Student   @relation(fields: [studentId], references: [id])
+  groupId     String
+  group       Group     @relation(fields: [groupId], references: [id])
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  @@id([studentId, groupId, classroomId])
+}
+
+enum QuestionType {
+  CHOICE
+  FILL
+}
+
+enum ResponseType {
+  IMAGE
+  DRAW
+  TEXT
+  FILE
+}
+
+enum AssignmentType {
+  QUIZ
+  HOMEWORK
+}
+
+enum SessionStatus {
+  SCHEDULED
+  INPROGRESS
+  COMPLETED
+}
+
+enum SubmissionStatus {
+  SUBMITTED
+  GRADED
+}
+
+enum DocType {
+  PPT
+  DOC
+  TXT
+  PDF
+  XLS
+  PNG
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
