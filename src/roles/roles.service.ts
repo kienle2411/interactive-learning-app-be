@@ -6,15 +6,7 @@ import { Role } from '@prisma/client';
 export class RolesService {
   constructor(private prisma: PrismaService) {}
 
-  async createRole(roleName: string): Promise<Role> {
-    return this.prisma.role.create({
-      data: {
-        roleName,
-      },
-    });
-  }
-
-  async getAllRoles(): Promise<Role[]> {
-    return this.prisma.role.findMany();
+  async getRoleById(id: string): Promise<Role> {
+    return this.prisma.role.findUnique({ where: { id } });
   }
 }

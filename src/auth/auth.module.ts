@@ -13,11 +13,15 @@ import { PassportModule } from '@nestjs/passport';
 import { LocalStrategy } from './local.strategy';
 import { TeachersService } from 'src/teachers/teachers.service';
 import { StudentsService } from 'src/students/students.service';
+import { JwtStrategy } from './jwt.strategy';
+import { RolesModule } from 'src/roles/roles.module';
+import { RolesService } from 'src/roles/roles.service';
 dotenv.config();
 
 @Module({
   imports: [
     UsersModule,
+    RolesModule,
     PassportModule,
     JwtModule.register({
       global: true,
@@ -30,10 +34,12 @@ dotenv.config();
     AuthService,
     UsersService,
     PrismaService,
+    RolesService,
     PasswordService,
     LocalStrategy,
     TeachersService,
     StudentsService,
+    JwtStrategy,
   ],
 })
 export class AuthModule {}
