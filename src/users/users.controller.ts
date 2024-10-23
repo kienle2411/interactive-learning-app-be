@@ -15,6 +15,8 @@ import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/roles.guard';
+import { Roles } from 'src/auth/roles.decorator';
 
 @Controller('users')
 export class UsersController {
@@ -28,7 +30,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Request() req) {
-    console.log(req.user);
     return this.usersService.getUserById(req.user.userId);
+  }
+
+  @Get()
+  @Roles('teacher')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  async getAllUsers() {
+    return this.usersService.getAllUsers();
   }
 }
