@@ -44,4 +44,8 @@ export class UsersService {
   async getUserById(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
   }
+
+  async getAllUsers() {
+    return this.prisma.user.findMany();
+  }
 }
