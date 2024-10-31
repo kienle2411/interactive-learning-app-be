@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { Prisma, User } from '@prisma/client';
 import { PasswordService } from 'src/password/password.service';
@@ -16,6 +16,44 @@ export class UsersService {
     private readonly teacherService: TeachersService,
     private readonly studentService: StudentsService,
   ) {}
+
+  private teacherCache = new Map<string, string>();
+  private studentCache = new Map<string, string>();
+
+  async getTeacherIdByUserId(userId: string): Promise<string | null> {
+    if (this.teacherCache.has(userId)) {
+      return this.teacherCache.get(userId);
+    }
+
+    const teacher = await this.prisma.teacher.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+    if (!teacher) {
+      throw new NotFoundException('Teacher Not Found');
+    }
+
+    this.teacherCache.set(userId, teacher.id);
+    return teacher.id;
+  }
+
+  async getStudentIdByUserId(userId: string): Promise<string | null> {
+    if (this.studentCache.has(userId)) {
+      return this.studentCache.get(userId);
+    }
+
+    const student = await this.prisma.student.findUnique({
+      where: { userId },
+      select: { id: true },
+    });
+
+    if (!student) {
+      throw new NotFoundException('Student Not Found');
+    }
+
+    this.studentCache.set(userId, student.id);
+    return student.id;
+  }
 
   async createUser(data: CreateUserDto) {
     const hashedPassword = await this.passwordService.hashPassword(
