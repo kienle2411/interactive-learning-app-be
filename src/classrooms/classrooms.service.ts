@@ -57,10 +57,9 @@ export class ClassroomsService {
     userId: string,
     page: number = 1,
     limit: number = 0,
+    skip: number = 0,
   ) {
     const teacherId = await this.usersService.getTeacherIdByUserId(userId);
-
-    const skip = (page - 1) * limit;
 
     const classrooms = await this.prisma.classroom.findMany({
       where: { teacherId },
