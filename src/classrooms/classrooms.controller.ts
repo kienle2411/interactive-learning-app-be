@@ -17,10 +17,15 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
+import { PaginationRequest } from 'src/interfaces/pagination-request.interface';
+import { SessionsService } from 'src/sessions/sessions.service';
 
 @Controller('classrooms')
 export class ClassroomsController {
-  constructor(private readonly classroomsService: ClassroomsService) {}
+  constructor(
+    private readonly classroomsService: ClassroomsService,
+    private readonly sessionsService: SessionsService,
+  ) {}
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -71,6 +76,21 @@ export class ClassroomsController {
       req.user.userId,
       parseInt(page),
       parseInt(limit),
+    );
+  }
+
+  @Get(':id/sessions')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('teacher', 'student')
+  async getSessionByClassroomId(
+    @Param('id') classroomId: string,
+    @Req() req: PaginationRequest,
+  ) {
+    const { page, limit } = req.pagination;
+    return this.sessionsService.getAllSessionByClassroomId(
+      classroomId,
+      page,
+      limit,
     );
   }
 }
