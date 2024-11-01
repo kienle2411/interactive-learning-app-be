@@ -69,13 +69,14 @@ export class ClassroomsController {
   @Roles('teacher')
   async getAllClassroomByTeacher(
     @Request() req,
-    @Query('page') page: string,
-    @Query('limit') limit: string,
+    @Req() pag: PaginationRequest,
   ) {
+    const { page, limit, skip } = pag.pagination;
     return this.classroomsService.getAllClassroomByTeacher(
       req.user.userId,
-      parseInt(page),
-      parseInt(limit),
+      page,
+      limit,
+      skip,
     );
   }
 
@@ -86,11 +87,12 @@ export class ClassroomsController {
     @Param('id') classroomId: string,
     @Req() req: PaginationRequest,
   ) {
-    const { page, limit } = req.pagination;
+    const { page, limit, skip } = req.pagination;
     return this.sessionsService.getAllSessionByClassroomId(
       classroomId,
       page,
       limit,
+      skip,
     );
   }
 }

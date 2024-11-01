@@ -4,5 +4,6 @@ export interface PaginationRequest extends Request {
   pagination?: {
     page: number;
     limit: number;
+    skip: number;
   };
 }

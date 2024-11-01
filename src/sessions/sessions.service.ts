@@ -46,9 +46,8 @@ export class SessionsService {
     classroomId: string,
     page: number = 1,
     limit: number = 0,
+    skip: number = 0,
   ) {
-    const skip = (page - 1) * limit;
-
     const sessions = await this.prisma.session.findMany({
       where: { classroomId },
       ...(limit > 0 ? { skip, take: limit } : {}),
