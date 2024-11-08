@@ -21,6 +21,9 @@ import { MediasModule } from './modules/medias/medias.module';
 import { StudentInClassroomModule } from './modules/student-in-classroom/student-in-classroom.module';
 import { StudentInGroupModule } from './modules/student-in-group/student-in-group.module';
 import { ChoiceModule } from './modules/choice/choice.module';
+import { DropboxService } from './modules/dropbox/dropbox.service';
+import { DropboxModule } from './modules/dropbox/dropbox.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -42,8 +45,12 @@ import { ChoiceModule } from './modules/choice/choice.module';
     StudentInClassroomModule,
     StudentInGroupModule,
     ChoiceModule,
+    DropboxModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, PasswordService],
+  providers: [AppService, PrismaService, PasswordService, DropboxService],
 })
 export class AppModule {}
