@@ -87,7 +87,7 @@ model Classroom {
 
   students StudentInClassroom[]
 
-  StudentInGroup StudentInGroup[]
+  studentInGroup StudentInGroup[]
 }
 
 model Group {
