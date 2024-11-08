@@ -9,7 +9,9 @@ import {
   Query,
   Req,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { ClassroomsService } from './classrooms.service';
@@ -20,6 +22,7 @@ import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
 import { PaginationParams } from '@/common/helpers';
 import { CreateMaterialDto } from '../materials/dto/create-material.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('classrooms')
 export class ClassroomsController {
@@ -95,12 +98,22 @@ export class ClassroomsController {
   }
 
   @Post(':id/materials')
+  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
   async createClassroomMaterial(
     @Param('id') classroomId: string,
+    @Req() req,
     @Body() createMaterialDto: CreateMaterialDto,
-  ) {}
+    @UploadedFile('file') file: Express.Multer.File,
+  ) {
+    return this.classroomsService.createClassroomMaterial(
+      req.user.userId,
+      classroomId,
+      file,
+      createMaterialDto,
+    );
+  }
 
   @Get(':id/assignments')
   @UseGuards(JwtAuthGuard)
