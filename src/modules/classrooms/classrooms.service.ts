@@ -10,12 +10,15 @@ import { UsersService } from 'src/modules/users/users.service';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { PaginationHelper } from '@/common/helpers';
 import { CreateMaterialDto } from '../materials/dto/create-material.dto';
+import { DropboxService } from '../dropbox/dropbox.service';
+import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
 
 @Injectable()
 export class ClassroomsService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly usersService: UsersService,
+    private readonly dropboxService: DropboxService,
   ) {}
 
   async createClassroom(
@@ -56,11 +59,17 @@ export class ClassroomsService {
   }
 
   async createClassroomMaterial(
+    userId: string,
+    classroomId: string,
+    file: Express.Multer.File,
     createMaterialDto: CreateMaterialDto,
   ): Promise<Material> {
+    const response = await this.dropboxService.uploadFile(file, userId);
     return this.prisma.material.create({
       data: {
         ...createMaterialDto,
+        classroomId: classroomId,
+        docFileId: response.docFile.id,
       },
     });
   }
@@ -75,6 +84,18 @@ export class ClassroomsService {
       { classroomId },
       { page, limit },
     );
+  }
+
+  async createClassroomAssignment(
+    classroomId: string,
+    createClassroomAssignment: CreateAssignmentDto,
+  ) {
+    return this.prisma.assignment.create({
+      data: {
+        ...createClassroomAssignment,
+        classroomId: classroomId,
+      },
+    });
   }
 
   async updateClassroomInformation(

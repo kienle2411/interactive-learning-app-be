@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
 
 export class CreateClassroomDto {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   classroomName: string;

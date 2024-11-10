@@ -9,7 +9,9 @@ import {
   Query,
   Req,
   Request,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { ClassroomsService } from './classrooms.service';
@@ -20,6 +22,8 @@ import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
 import { PaginationParams } from '@/common/helpers';
 import { CreateMaterialDto } from '../materials/dto/create-material.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
 
 @Controller('classrooms')
 export class ClassroomsController {
@@ -33,7 +37,7 @@ export class ClassroomsController {
   @Roles('teacher', 'student')
   async getClassroomStudents(
     @Param('id') classroomId: string,
-    @Req() req: PaginationParams,
+    @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
     return await this.classroomsService.getClassroomStudents(
@@ -47,7 +51,7 @@ export class ClassroomsController {
   @UseGuards(JwtAuthGuard)
   async getClassroomGroups(
     @Param('id') classroomId: string,
-    @Req() req: PaginationParams,
+    @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
     return await this.classroomsService.getClassroomGroups(
@@ -84,7 +88,7 @@ export class ClassroomsController {
   @UseGuards(JwtAuthGuard)
   async getClassroomMaterials(
     @Param('id') classroomId: string,
-    @Body() req: PaginationParams,
+    @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
     return await this.classroomsService.getClassroomMaterials(
@@ -95,18 +99,28 @@ export class ClassroomsController {
   }
 
   @Post(':id/materials')
+  @UseInterceptors(FileInterceptor('file'))
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
   async createClassroomMaterial(
     @Param('id') classroomId: string,
+    @Req() req,
     @Body() createMaterialDto: CreateMaterialDto,
-  ) {}
+    @UploadedFile('file') file: Express.Multer.File,
+  ) {
+    return this.classroomsService.createClassroomMaterial(
+      req.user.userId,
+      classroomId,
+      file,
+      createMaterialDto,
+    );
+  }
 
   @Get(':id/assignments')
   @UseGuards(JwtAuthGuard)
   async getClassroomAssignments(
     @Param('id') classroomId: string,
-    @Body() req: PaginationParams,
+    @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
     return await this.classroomsService.getClassroomAssignments(
@@ -116,12 +130,25 @@ export class ClassroomsController {
     );
   }
 
+  @Post(':id/assignments')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('teacher')
+  async createClassroomAssignments(
+    @Param('id') classroomId: string,
+    @Body() createAssignmentDto: CreateAssignmentDto,
+  ) {
+    return this.classroomsService.createClassroomAssignment(
+      classroomId,
+      createAssignmentDto,
+    );
+  }
+
   @Get(':id/sessions')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher', 'student')
   async getClassroomSessions(
     @Param('id') classroomId: string,
-    @Req() req: PaginationParams,
+    @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
     return await this.sessionsService.getClassroomSessions(

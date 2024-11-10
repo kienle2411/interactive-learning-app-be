@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { Dropbox, DropboxAuth, files } from 'dropbox';
-import * as fs from 'fs';
-import * as path from 'path';
 import moment from 'moment';
 import { PrismaService } from '@/prisma.service';
 import { DocType } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+import { isStringKeyInEnum } from '@/common/utils/includeEnum.util';
+import { Readable } from 'stream';
 
 @Injectable()
 export class DropboxService {
@@ -32,21 +32,25 @@ export class DropboxService {
     this.dbx = new Dropbox({ auth: dbxAuth });
   }
 
-  async uploadFile(filePath: string, userId: string): Promise<any> {
+  async uploadFile(file: Express.Multer.File, userId: string): Promise<any> {
     try {
-      const dropboxPath = `/docFiles/${userId}/${moment().format('yyyy-MM-dd_HH-mm-ss')}-${path.basename(filePath)}`;
-      const fileContents = fs.readFileSync(filePath);
+      const fileExtension = file.originalname.split('.')[1].toUpperCase();
+      if (!isStringKeyInEnum(fileExtension, DocType)) {
+        throw new BadRequestException('File type is not accepted!');
+      }
+      const dropboxPath = `/docFiles/${userId}/${moment().format('yyyy-MM-DD_HH-mm-ss')}-${file.originalname}`;
       const response = await this.dbx.filesUpload({
         path: dropboxPath,
-        contents: fileContents,
+        contents: file.buffer,
       });
-      await this.prisma.docFile.create({
+      const docFile = await this.prisma.docFile.create({
         data: {
-          type: DocType.TXT,
-          url: dropboxPath,
+          type: fileExtension as DocType,
+          fileName: file.originalname,
+          path: dropboxPath,
         },
       });
-      return response;
+      return { docFile, response };
     } catch (error) {
       console.error('Error uploading file to Dropbox: ', error);
       throw error;
@@ -60,13 +64,13 @@ export class DropboxService {
           id: docFileId,
         },
         select: {
-          url: true,
+          path: true,
         },
       });
-      const response = await this.dbx.filesDownload({
-        path: dropboxPath.url,
+      const response = await this.dbx.filesGetTemporaryLink({
+        path: dropboxPath.path,
       });
-      return response;
+      return response.result.link;
     } catch (error) {
       console.error('Error downloading file to Dropbox: ', error);
       throw error;

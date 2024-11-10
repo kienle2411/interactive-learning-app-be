@@ -8,6 +8,7 @@ import { RolesService } from 'src/modules/roles/roles.service';
 import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { StudentsService } from 'src/modules/students/students.service';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
+import { DropboxService } from '../dropbox/dropbox.service';
 
 @Module({
   providers: [
@@ -19,6 +20,7 @@ import { SessionsService } from 'src/modules/sessions/sessions.service';
     TeachersService,
     StudentsService,
     SessionsService,
+    DropboxService,
   ],
   controllers: [ClassroomsController],
 })

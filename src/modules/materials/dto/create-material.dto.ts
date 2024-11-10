@@ -8,12 +8,4 @@ export class CreateMaterialDto {
   @IsOptional()
   @IsString()
   description?: string;
-
-  @IsString()
-  @IsNotEmpty()
-  docFileId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  classroomId: string;
 }

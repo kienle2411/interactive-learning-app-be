@@ -133,8 +133,9 @@ model Material {
 
 model DocFile {
   id        String    @id @default(cuid())
+  fileName  String
   type      DocType
-  url       String
+  path      String
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
@@ -288,12 +289,16 @@ enum SubmissionStatus {
 }
 
 enum DocType {
+  DOCX
+  PPTX
+  XLSX
   PPT
   DOC
   TXT
   PDF
   XLS
   PNG
+  JPG
 }
 
 enum MediaType {
