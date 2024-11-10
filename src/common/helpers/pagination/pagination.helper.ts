@@ -8,8 +8,8 @@ export class PaginationHelper {
     options: PaginationParams = {},
     include: any = {},
   ): Promise<PaginatedResult<T>> {
-    const page = options.page || 1;
-    const limit = options.limit || 0;
+    const page = Number(options.page) || 1;
+    const limit = Number(options.limit) || 0;
     const skip = (page - 1) * limit;
     const hasCreatedAt =
       prismaModel.fields && prismaModel.fields.createdAt

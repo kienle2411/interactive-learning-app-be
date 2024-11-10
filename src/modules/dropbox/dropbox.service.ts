@@ -5,6 +5,7 @@ import { PrismaService } from '@/prisma.service';
 import { DocType } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
 import { isStringKeyInEnum } from '@/common/utils/includeEnum.util';
+import { Readable } from 'stream';
 
 @Injectable()
 export class DropboxService {
@@ -66,10 +67,10 @@ export class DropboxService {
           path: true,
         },
       });
-      const response = await this.dbx.filesDownload({
+      const response = await this.dbx.filesGetTemporaryLink({
         path: dropboxPath.path,
       });
-      return response;
+      return response.result.link;
     } catch (error) {
       console.error('Error downloading file to Dropbox: ', error);
       throw error;
