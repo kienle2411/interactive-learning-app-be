@@ -25,6 +25,7 @@ import { CreateMaterialDto } from '../materials/dto/create-material.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
 import { CreateGroupDto } from '../groups/dto/create-group.dto';
+import { CreateSessionDto } from '../sessions/dto/create-session.dto';
 
 @Controller('classrooms')
 export class ClassroomsController {
@@ -61,6 +62,20 @@ export class ClassroomsController {
   async createClassroom(@Body() createClassroomDto: CreateClassroomDto) {
     await this.classroomsService.createClassroom(createClassroomDto);
     return { message: 'Classroom created successfully' };
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('teacher')
+  async updateClassroomInformation(
+    @Param('id') classroomId: string,
+    @Body() updateClassroomDto: UpdateClassroomDto,
+  ) {
+    await this.classroomsService.updateClassroomInformation(
+      classroomId,
+      updateClassroomDto,
+    );
+    return { message: 'Classroom updated successfully' };
   }
 
   @Delete(':id')
@@ -165,24 +180,23 @@ export class ClassroomsController {
     @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
-    return await this.sessionsService.getClassroomSessions(
+    return await this.classroomsService.getClassroomSessions(
       classroomId,
       page,
       limit,
     );
   }
 
-  @Patch(':id')
+  @Post(':id/sessions')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
-  async updateClassroomInformation(
+  async createClassroomSession(
     @Param('id') classroomId: string,
-    @Body() updateClassroomDto: UpdateClassroomDto,
+    @Body() createSessionDto: CreateSessionDto,
   ) {
-    await this.classroomsService.updateClassroomInformation(
+    return await this.classroomsService.createClassroomSession(
       classroomId,
-      updateClassroomDto,
+      createSessionDto,
     );
-    return { message: 'Classroom updated successfully' };
   }
 }

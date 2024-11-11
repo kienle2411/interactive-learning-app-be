@@ -8,14 +8,6 @@ import { PaginationHelper } from '@/common/helpers';
 export class SessionsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createSession(createSessionDto: CreateSessionDto) {
-    return this.prisma.session.create({
-      data: {
-        ...createSessionDto,
-      },
-    });
-  }
-
   async getSessionInformation(sessionId: string) {
     return this.prisma.session.findUnique({
       where: { id: sessionId },
@@ -38,20 +30,8 @@ export class SessionsService {
     await this.prisma.session.update({
       where: { id: sessionId },
       data: {
-        updatedAt: new Date(),
+        deletedAt: new Date(),
       },
     });
-  }
-
-  async getClassroomSessions(
-    classroomId: string,
-    page: number = 1,
-    limit: number = 0,
-  ) {
-    return PaginationHelper.paginate(
-      this.prisma.session,
-      { classroomId },
-      { page, limit },
-    );
   }
 }

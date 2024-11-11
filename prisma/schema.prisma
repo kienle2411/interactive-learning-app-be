@@ -115,6 +115,22 @@ model Session {
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 }
 
+model SessionView {
+  id          String        @id
+  topic       String
+  description String?
+  sessionDate DateTime
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime
+  updatedAt   DateTime?
+  deletedAt   DateTime?
+  classroomId String
+  status      SessionStatus
+
+  @@map("sessionview")
+}
+
 model Material {
   id          String   @id @default(cuid())
   title       String

@@ -9,16 +9,16 @@ export class CreateSessionDto {
   @IsString()
   description?: string;
 
-  @IsEnum(SessionStatus)
-  status: SessionStatus;
-
   @IsDateString()
+  @IsNotEmpty()
   sessionDate: string;
 
   @IsDateString()
+  @IsNotEmpty()
   startTime: string;
 
   @IsDateString()
+  @IsNotEmpty()
   endTime: string;
 
   @IsString()

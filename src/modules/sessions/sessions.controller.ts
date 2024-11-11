@@ -20,14 +20,6 @@ import { UpdateSessionDto } from './dto/update-session.dto';
 export class SessionsController {
   constructor(private readonly sessionsService: SessionsService) {}
 
-  @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('teacher')
-  async createSession(@Body() createSessionDto: CreateSessionDto) {
-    await this.sessionsService.createSession(createSessionDto);
-    return { message: 'Session created successfully' };
-  }
-
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher', 'student')
