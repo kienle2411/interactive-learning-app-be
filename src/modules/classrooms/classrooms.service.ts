@@ -12,6 +12,7 @@ import { PaginationHelper } from '@/common/helpers';
 import { CreateMaterialDto } from '../materials/dto/create-material.dto';
 import { DropboxService } from '../dropbox/dropbox.service';
 import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
+import { CreateGroupDto } from '../groups/dto/create-group.dto';
 
 @Injectable()
 export class ClassroomsService {
@@ -142,5 +143,17 @@ export class ClassroomsService {
       { classroomId },
       { page, limit },
     );
+  }
+
+  async createClassroomGroup(
+    classroomId: string,
+    createGroupDto: CreateGroupDto,
+  ) {
+    return this.prisma.group.create({
+      data: {
+        ...createGroupDto,
+        classroomId: classroomId,
+      },
+    });
   }
 }

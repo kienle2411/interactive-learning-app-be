@@ -24,6 +24,7 @@ import { PaginationParams } from '@/common/helpers';
 import { CreateMaterialDto } from '../materials/dto/create-material.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
+import { CreateGroupDto } from '../groups/dto/create-group.dto';
 
 @Controller('classrooms')
 export class ClassroomsController {
@@ -41,20 +42,6 @@ export class ClassroomsController {
   ) {
     const { page, limit } = req;
     return await this.classroomsService.getClassroomStudents(
-      classroomId,
-      page,
-      limit,
-    );
-  }
-
-  @Get(':id/groups')
-  @UseGuards(JwtAuthGuard)
-  async getClassroomGroups(
-    @Param('id') classroomId: string,
-    @Query() req: PaginationParams,
-  ) {
-    const { page, limit } = req;
-    return await this.classroomsService.getClassroomGroups(
       classroomId,
       page,
       limit,
@@ -133,13 +120,40 @@ export class ClassroomsController {
   @Post(':id/assignments')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
-  async createClassroomAssignments(
+  async createClassroomAssignment(
     @Param('id') classroomId: string,
     @Body() createAssignmentDto: CreateAssignmentDto,
   ) {
     return this.classroomsService.createClassroomAssignment(
       classroomId,
       createAssignmentDto,
+    );
+  }
+
+  @Get(':id/groups')
+  @UseGuards(JwtAuthGuard)
+  async getClassroomGroups(
+    @Param('id') classroomId: string,
+    @Query() req: PaginationParams,
+  ) {
+    const { page, limit } = req;
+    return await this.classroomsService.getClassroomGroups(
+      classroomId,
+      page,
+      limit,
+    );
+  }
+
+  @Post(':id/groups')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('teacher')
+  async createClassroomGroup(
+    @Param('id') classroomId: string,
+    @Body() createGroupDto: CreateGroupDto,
+  ) {
+    return await this.classroomsService.createClassroomGroup(
+      classroomId,
+      createGroupDto,
     );
   }
 

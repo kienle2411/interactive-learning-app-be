@@ -1,15 +1,23 @@
-import { IsNotEmpty, IsSemVer, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsSemVer,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
+export class StudentIdDto {
+  @IsNotEmpty()
+  id: string;
+}
 
 export class CreateStudentInGroupDto {
   @IsNotEmpty()
-  @IsString()
-  studentId: string;
+  @IsArray()
+  @IsString({ each: true })
+  studentIds: string[];
 
-  @IsNotEmpty()
-  @IsString()
-  groupId: string;
-
-  @IsNotEmpty()
-  @IsString()
-  classroomId: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // groupId: string;
 }
