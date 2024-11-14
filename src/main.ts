@@ -18,8 +18,8 @@ async function bootstrap() {
     .addTag('app')
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('', app, documentFactory);
+  SwaggerModule.setup('documentation', app, documentFactory);
 
-  await app.listen(3000);
+  await app.listen(3001);
 }
 bootstrap();
