@@ -1,16 +1,10 @@
-import {
-  Controller,
-  Get,
-  Query,
-  Req,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Query, Req, UseGuards } from '@nestjs/common';
 import { TeachersService } from './teachers.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { RolesGuard } from '../auth/roles.guard';
-import { Roles } from '../auth/roles.decorator';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
 import { PaginationParams } from '@/common/helpers';
+import { Request } from 'express';
 
 @Controller('teachers')
 export class TeachersController {
@@ -19,10 +13,13 @@ export class TeachersController {
   @Get('classrooms')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
-  async getTeacherClassrooms(@Request() req, @Query() pag: PaginationParams) {
+  async getTeacherClassrooms(
+    @Req() req: Request,
+    @Query() pag: PaginationParams,
+  ) {
     const { page, limit } = pag;
     return this.teachersService.getTeacherClassrooms(
-      req.user.userId,
+      req.user['sub'],
       page,
       limit,
     );

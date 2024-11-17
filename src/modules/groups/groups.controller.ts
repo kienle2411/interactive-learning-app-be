@@ -9,10 +9,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { GroupsService } from './groups.service';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 import { UpdateGroupDto } from './dto/update-group.dto';
-import { Roles } from '../auth/roles.decorator';
-import { RolesGuard } from '../auth/roles.guard';
+import { Roles } from '../auth/decorator/roles.decorator';
+import { RolesGuard } from '../auth/guard/roles.guard';
 import { PaginationParams } from '@/common/helpers';
 import { CreateStudentInClassroomDto } from '../student-in-classroom/dto/create-student-in-classroom.dto';
 import { CreateStudentInGroupDto } from '../student-in-group/dto/create-student-in-group.dto';

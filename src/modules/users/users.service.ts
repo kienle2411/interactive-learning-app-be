@@ -11,6 +11,7 @@ import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { StudentsService } from 'src/modules/students/students.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/modules/roles/roles.service';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -62,18 +63,14 @@ export class UsersService {
     return student.id;
   }
 
-  async createUser(data: CreateUserDto) {
-    const hashedPassword = await this.passwordService.hashPassword(
-      data.password,
-    );
+  async createUser(createUserDto: CreateUserDto) {
     const user = await this.prisma.user.create({
       data: {
-        ...data,
-        password: hashedPassword,
-        dateOfBirth: new Date(data.dateOfBirth),
+        ...createUserDto,
+        dateOfBirth: new Date(createUserDto.dateOfBirth),
       },
     });
-    const role = await this.roleService.getRoleById(data.roleId);
+    const role = await this.roleService.getRoleById(createUserDto.roleId);
     if (role.roleName === 'student') {
       await this.studentsService.createStudent({ userId: user.id });
     } else {
@@ -86,11 +83,26 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { username } });
   }
 
-  async getUserById(id: string) {
+  async findById(id: string) {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
   async getAllUsers() {
     return this.prisma.user.findMany();
+  }
+
+  async findByUsername(username: string) {
+    return this.prisma.user.findUnique({ where: { username: username } });
+  }
+
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    return this.prisma.user.update({
+      data: {
+        ...updateUserDto,
+      },
+      where: {
+        id: id,
+      },
+    });
   }
 }
