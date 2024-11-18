@@ -15,9 +15,9 @@ import {
 } from '@nestjs/common';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { ClassroomsService } from './classrooms.service';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { Roles } from 'src/modules/auth/roles.decorator';
-import { RolesGuard } from 'src/modules/auth/roles.guard';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
+import { Roles } from '@/modules/auth/decorator/roles.decorator';
+import { RolesGuard } from '@/modules/auth/guard/roles.guard';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
 import { PaginationParams } from '@/common/helpers';

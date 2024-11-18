@@ -47,4 +47,8 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   profileDescription?: string;
+
+  @IsOptional()
+  @IsString()
+  refreshToken?: string;
 }

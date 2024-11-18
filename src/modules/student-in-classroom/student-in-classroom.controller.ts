@@ -9,9 +9,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { StudentInClassroomService } from './student-in-classroom.service';
-import { JwtAuthGuard } from 'src/modules/auth/jwt-auth.guard';
-import { Roles } from 'src/modules/auth/roles.decorator';
-import { RolesGuard } from 'src/modules/auth/roles.guard';
+import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
+import { Roles } from '@/modules/auth/decorator/roles.decorator';
+import { RolesGuard } from '@/modules/auth/guard/roles.guard';
 import { CreateStudentInClassroomDto } from './dto/create-student-in-classroom.dto';
 import { create } from 'domain';
 import { AddStudentByEmailDto } from './dto/add-student-by-email.dto';
