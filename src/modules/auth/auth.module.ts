@@ -28,6 +28,7 @@ dotenv.config();
     PasswordService,
     TeachersService,
     StudentsService,
+    JwtService,
     JwtStrategy,
     RefreshTokenStrategy,
   ],
