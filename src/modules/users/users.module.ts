@@ -8,6 +8,7 @@ import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { AuthService } from 'src/modules/auth/auth.service';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 
 @Module({
   providers: [
@@ -18,6 +19,7 @@ import { AuthService } from 'src/modules/auth/auth.service';
     TeachersService,
     StudentsService,
     RolesService,
+    JwtService,
   ],
   controllers: [UsersController],
 })
