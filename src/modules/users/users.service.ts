@@ -17,7 +17,6 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersService {
   constructor(
     private prisma: PrismaService,
-    private readonly passwordService: PasswordService,
     private readonly roleService: RolesService,
     @Inject(forwardRef(() => TeachersService))
     private readonly teachersService: TeachersService,

@@ -18,16 +18,7 @@ import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
 dotenv.config();
 
 @Module({
-  imports: [
-    UsersModule,
-    RolesModule,
-    PassportModule,
-    JwtModule.register({
-      global: true,
-      secret: process.env.JWT,
-      signOptions: { expiresIn: '12h' },
-    }),
-  ],
+  imports: [UsersModule, RolesModule, PassportModule, JwtModule.register({})],
   controllers: [AuthController],
   providers: [
     AuthService,
