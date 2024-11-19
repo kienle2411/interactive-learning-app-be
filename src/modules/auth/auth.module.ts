@@ -15,6 +15,8 @@ import { JwtStrategy } from './guard/jwt.strategy';
 import { RolesModule } from 'src/modules/roles/roles.module';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
+import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { MediasService } from '../medias/medias.service';
 dotenv.config();
 
 @Module({
@@ -31,6 +33,8 @@ dotenv.config();
     JwtService,
     JwtStrategy,
     RefreshTokenStrategy,
+    CloudinaryService,
+    MediasService,
   ],
 })
 export class AuthModule {}

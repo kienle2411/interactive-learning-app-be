@@ -13,7 +13,7 @@ export class MaterialsController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
   async updateMaterialInformation(
-    @Param() materialId: string,
+    @Param('id') materialId: string,
     @Body() updateMaterialDto: UpdateMaterialDto,
   ) {
     return await this.materialsService.updateMaterialInformation(

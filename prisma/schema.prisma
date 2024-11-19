@@ -67,6 +67,10 @@ model Student {
   classrooms StudentInClassroom[]
 
   groups StudentInGroup[]
+
+  assignments StudentInAssignment[]
+
+  StudentInSession StudentInSession[]
 }
 
 model Classroom {
@@ -115,6 +119,8 @@ model Session {
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  StudentInSession StudentInSession[]
 }
 
 model SessionView {
@@ -169,12 +175,15 @@ model Assignment {
   title          String
   description    String
   assignmentType AssignmentType
+  score          Int?
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
   submissions Submission[]
   questions   Question[]
+
+  StudentInAssignment StudentInAssignment[]
 }
 
 model Submission {
@@ -197,6 +206,7 @@ model Question {
   timeResponse  DateTime?
   createdAt     DateTime?    @default(now())
   updatedAt     DateTime?    @updatedAt
+  score         Int?
 
   orderInSlide Int?
 
@@ -272,7 +282,27 @@ model StudentInGroup {
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
-  @@id([studentId, groupId, classroomId])
+  @@id([studentId, classroomId])
+}
+
+model StudentInAssignment {
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id])
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  score        Int?
+
+  @@id([studentId, assignmentId])
+}
+
+model StudentInSession {
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id])
+  sessionId String
+  session   Session  @relation(fields: [sessionId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@id([studentId, sessionId])
 }
 
 enum QuestionType {

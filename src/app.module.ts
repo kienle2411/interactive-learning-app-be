@@ -24,6 +24,7 @@ import { ChoiceModule } from './modules/choice/choice.module';
 import { DropboxService } from './modules/dropbox/dropbox.service';
 import { DropboxModule } from './modules/dropbox/dropbox.module';
 import { ConfigModule } from '@nestjs/config';
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService, PasswordService, DropboxService],

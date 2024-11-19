@@ -7,6 +7,8 @@ import { RolesService } from 'src/modules/roles/roles.service';
 import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { StudentsService } from 'src/modules/students/students.service';
 import { PasswordService } from 'src/modules/password/password.service';
+import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { MediasService } from '../medias/medias.service';
 
 @Module({
   providers: [
@@ -17,6 +19,8 @@ import { PasswordService } from 'src/modules/password/password.service';
     RolesService,
     TeachersService,
     StudentsService,
+    CloudinaryService,
+    MediasService,
   ],
   controllers: [StudentInClassroomController],
 })
