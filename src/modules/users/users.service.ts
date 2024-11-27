@@ -12,16 +12,20 @@ import { StudentsService } from 'src/modules/students/students.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
+import { MediasService } from '../medias/medias.service';
 
 @Injectable()
 export class UsersService {
   constructor(
     private prisma: PrismaService,
     private readonly roleService: RolesService,
+    private readonly cloudinaryService: CloudinaryService,
+    private readonly mediasService: MediasService,
     @Inject(forwardRef(() => TeachersService))
     private readonly teachersService: TeachersService,
     @Inject(forwardRef(() => StudentsService))
-    private studentsService: StudentsService,
+    private readonly studentsService: StudentsService,
   ) {}
 
   private teacherCache = new Map<string, string>();
@@ -86,10 +90,6 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async getAllUsers() {
-    return this.prisma.user.findMany();
-  }
-
   async findByUsername(username: string) {
     return this.prisma.user.findUnique({ where: { username: username } });
   }
@@ -103,5 +103,23 @@ export class UsersService {
         id: id,
       },
     });
+  }
+
+  async uploadAvatar(file: Express.Multer.File, userId: string) {
+    const uploadResponse = await this.cloudinaryService.uploadFile(file);
+    if (!uploadResponse.url) {
+      return uploadResponse;
+    }
+    const media = await this.mediasService.createMedia({
+      type: 'IMAGE',
+      url: uploadResponse.url,
+    });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        mediaId: media.id,
+      },
+    });
+    return uploadResponse;
   }
 }

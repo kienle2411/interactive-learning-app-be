@@ -24,6 +24,10 @@ import { ChoiceModule } from './modules/choice/choice.module';
 import { DropboxService } from './modules/dropbox/dropbox.service';
 import { DropboxModule } from './modules/dropbox/dropbox.module';
 import { ConfigModule } from '@nestjs/config';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
 @Module({
   imports: [
@@ -49,8 +53,22 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    CloudinaryModule,
   ],
   controllers: [AppController],
-  providers: [AppService, PrismaService, PasswordService, DropboxService],
+  providers: [
+    AppService,
+    PrismaService,
+    PasswordService,
+    DropboxService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: TransformInterceptor,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}

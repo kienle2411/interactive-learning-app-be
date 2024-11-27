@@ -53,6 +53,10 @@ model Teacher {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
   classrooms Classroom[]
 }
 
@@ -62,11 +66,19 @@ model Student {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
+
   answers Answer[]
 
   classrooms StudentInClassroom[]
 
   groups StudentInGroup[]
+
+  assignments StudentInAssignment[]
+
+  StudentInSession StudentInSession[]
 }
 
 model Classroom {
@@ -92,8 +104,11 @@ model Classroom {
 }
 
 model Group {
-  id        String @id @default(cuid())
+  id        String    @id @default(cuid())
   groupName String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
@@ -115,6 +130,8 @@ model Session {
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
+
+  StudentInSession StudentInSession[]
 }
 
 model SessionView {
@@ -154,6 +171,7 @@ model DocFile {
   type      DocType
   path      String
   createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
   material Material?
@@ -169,18 +187,26 @@ model Assignment {
   title          String
   description    String
   assignmentType AssignmentType
+  createdAt      DateTime?      @default(now())
+  updatedAt      DateTime?      @updatedAt
+  deletedAt      DateTime?
+  score          Int?
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
   submissions Submission[]
   questions   Question[]
+
+  StudentInAssignment StudentInAssignment[]
 }
 
 model Submission {
   id        String           @id @default(cuid())
   status    SubmissionStatus
   createdAt DateTime         @default(now())
+  updatedAt DateTime?        @updatedAt
+  deletedAt DateTime?
 
   docFile DocFile[]
 
@@ -195,8 +221,10 @@ model Question {
   questionTitle String
   content       String?
   timeResponse  DateTime?
-  createdAt     DateTime?    @default(now())
+  createdAt     DateTime     @default(now())
   updatedAt     DateTime?    @updatedAt
+  deletedAt     DateTime?
+  score         Int?
 
   orderInSlide Int?
 
@@ -220,6 +248,7 @@ model Answer {
   student   Student @relation(fields: [studentId], references: [id])
 
   createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
   questionId String
@@ -236,6 +265,10 @@ model Option {
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  deletedAt DateTime?
 
   answer Answer[]
 }
@@ -259,6 +292,9 @@ model StudentInClassroom {
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
   totalScore Decimal @default(0)
 
   @@id([studentId, classroomId])
@@ -272,7 +308,34 @@ model StudentInGroup {
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
-  @@id([studentId, groupId, classroomId])
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  @@id([studentId, classroomId])
+}
+
+model StudentInAssignment {
+  studentId    String
+  student      Student    @relation(fields: [studentId], references: [id])
+  assignmentId String
+  assignment   Assignment @relation(fields: [assignmentId], references: [id])
+  score        Int?
+
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  @@id([studentId, assignmentId])
+}
+
+model StudentInSession {
+  studentId String
+  student   Student   @relation(fields: [studentId], references: [id])
+  sessionId String
+  session   Session   @relation(fields: [sessionId], references: [id])
+  createdAt DateTime  @default(now())
+  deletedAt DateTime?
+
+  @@id([studentId, sessionId])
 }
 
 enum QuestionType {

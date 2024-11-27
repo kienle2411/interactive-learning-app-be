@@ -1,11 +1,13 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma.service';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
-import { Classroom, Material, SessionStatus } from '@prisma/client';
+import { Classroom, Material, Prisma, SessionStatus } from '@prisma/client';
 import { UsersService } from 'src/modules/users/users.service';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { PaginationHelper } from '@/common/helpers';
@@ -25,10 +27,13 @@ export class ClassroomsService {
 
   async createClassroom(
     createClassroomDto: CreateClassroomDto,
-  ): Promise<Classroom> {
-    return this.prisma.classroom.create({
+    userId: string,
+  ) {
+    const teacherId = await this.usersService.getTeacherIdByUserId(userId);
+    return await this.prisma.classroom.create({
       data: {
         ...createClassroomDto,
+        teacherId,
       },
     });
   }

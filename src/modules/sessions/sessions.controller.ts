@@ -10,9 +10,9 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SessionsService } from './sessions.service';
-import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
-import { RolesGuard } from '@/modules/auth/guard/roles.guard';
-import { Roles } from '@/modules/auth/decorator/roles.decorator';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
+import { Roles } from '@/modules/auth/decorators/roles.decorator';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 

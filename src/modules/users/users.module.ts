@@ -9,6 +9,9 @@ import { RolesService } from 'src/modules/roles/roles.service';
 import { AuthModule } from 'src/modules/auth/auth.module';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { JwtModule, JwtService } from '@nestjs/jwt';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
+import { MediasService } from '../medias/medias.service';
+import { AssignmentsService } from '../assignments/assignments.service';
 
 @Module({
   providers: [
@@ -20,6 +23,9 @@ import { JwtModule, JwtService } from '@nestjs/jwt';
     StudentsService,
     RolesService,
     JwtService,
+    CloudinaryService,
+    MediasService,
+    AssignmentsService,
   ],
   controllers: [UsersController],
 })

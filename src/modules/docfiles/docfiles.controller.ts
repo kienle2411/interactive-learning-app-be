@@ -14,7 +14,7 @@ import {
 import { Response } from 'express';
 import { DocfilesService } from './docfiles.service';
 import { DropboxService } from '../dropbox/dropbox.service';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import moment from 'moment';
 import { PrismaService } from '@/prisma.service';
 import { CreateDocFileDto } from './dto/create-docfile.dto';

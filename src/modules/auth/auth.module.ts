@@ -11,10 +11,12 @@ import * as dotenv from 'dotenv';
 import { PassportModule } from '@nestjs/passport';
 import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { StudentsService } from 'src/modules/students/students.service';
-import { JwtStrategy } from './guard/jwt.strategy';
+import { JwtStrategy } from './guards/jwt.strategy';
 import { RolesModule } from 'src/modules/roles/roles.module';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
+import { MediasService } from '../medias/medias.service';
 dotenv.config();
 
 @Module({
@@ -31,6 +33,8 @@ dotenv.config();
     JwtService,
     JwtStrategy,
     RefreshTokenStrategy,
+    CloudinaryService,
+    MediasService,
   ],
 })
 export class AuthModule {}
