@@ -9,13 +9,20 @@ import {
   IsOptional,
   IsString,
   Length,
+  Matches,
   Max,
   Min,
+  MinLength,
 } from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty()
-  @IsString()
+  @MinLength(3, { message: 'Username must be at least 3 characters long' })
+  @IsString({ message: 'Username must be a string' })
+  @Matches(/^[a-zA-Z0-9_-]*$/, {
+    message:
+      'Username can only contain letters, numbers, underscores and hyphens',
+  })
   username: string;
 
   @IsNotEmpty()

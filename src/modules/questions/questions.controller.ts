@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { QuestionsService } from './questions.service';
 import { CreateQuestionDto } from './dto/create-question.dto';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { CreateChoiceDto } from '../choice/dto/create-choice.dto';
 import { CreateAnswerDto } from '../answers/dto/create-answer.dto';

@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubmissionsService } from './submissions.service';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateSubmissionDto } from './dto/update-submission.dto';
 import { CreateSubmissionDto } from './dto/create-submission.dto';
 

@@ -11,6 +11,7 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { access } from 'fs';
 import { AuthDto } from './dto/auth.dto';
+import { handlePrismaError } from '@/common/utils/prisma-error-handler';
 
 @Injectable()
 export class AuthService {
@@ -21,12 +22,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
   async signUp(createUserDto: CreateUserDto) {
-    const userExists = await this.usersService.findByUsername(
-      createUserDto.username,
-    );
-    if (userExists) {
-      throw new BadRequestException('User already exists');
-    }
+    // const userExists = await this.usersService.findByUsername(
+    //   createUserDto.username,
+    // );
+    // if (userExists) {
+    //   throw new BadRequestException('User already exists');
+    // }
     const hashedPassword = await this.passwordService.hashPassword(
       createUserDto.password,
     );

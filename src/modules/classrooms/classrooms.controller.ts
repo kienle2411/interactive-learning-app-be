@@ -8,16 +8,16 @@ import {
   Post,
   Query,
   Req,
-  Request,
   UploadedFile,
+  UseFilters,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { CreateClassroomDto } from './dto/create-classroom.dto';
 import { ClassroomsService } from './classrooms.service';
-import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
-import { Roles } from '@/modules/auth/decorator/roles.decorator';
-import { RolesGuard } from '@/modules/auth/guard/roles.guard';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { Roles } from '@/modules/auth/decorators/roles.decorator';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
 import { PaginationParams } from '@/common/helpers';
@@ -26,13 +26,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAssignmentDto } from '../assignments/dto/create-assignment.dto';
 import { CreateGroupDto } from '../groups/dto/create-group.dto';
 import { CreateSessionDto } from '../sessions/dto/create-session.dto';
+import { Request } from 'express';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
 
 @Controller('classrooms')
+@UseInterceptors(TransformInterceptor)
+@UseFilters(GlobalExceptionFilter)
 export class ClassroomsController {
-  constructor(
-    private readonly classroomsService: ClassroomsService,
-    private readonly sessionsService: SessionsService,
-  ) {}
+  constructor(private readonly classroomsService: ClassroomsService) {}
 
   @Get(':id/students')
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -59,9 +61,14 @@ export class ClassroomsController {
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
-  async createClassroom(@Body() createClassroomDto: CreateClassroomDto) {
-    await this.classroomsService.createClassroom(createClassroomDto);
-    return { message: 'Classroom created successfully' };
+  async createClassroom(
+    @Req() req: Request,
+    @Body() createClassroomDto: CreateClassroomDto,
+  ) {
+    return await this.classroomsService.createClassroom(
+      createClassroomDto,
+      req.user['sub'],
+    );
   }
 
   @Patch(':id')

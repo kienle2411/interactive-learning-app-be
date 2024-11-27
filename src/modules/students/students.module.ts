@@ -7,7 +7,7 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { PasswordService } from 'src/modules/password/password.service';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { TeachersService } from 'src/modules/teachers/teachers.service';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { MediasService } from '../medias/medias.service';
 
 @Module({

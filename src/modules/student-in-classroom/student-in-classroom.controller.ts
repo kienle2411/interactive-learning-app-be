@@ -4,18 +4,18 @@ import {
   Delete,
   Param,
   Post,
-  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
 import { StudentInClassroomService } from './student-in-classroom.service';
-import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
-import { Roles } from '@/modules/auth/decorator/roles.decorator';
-import { RolesGuard } from '@/modules/auth/guard/roles.guard';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
+import { Roles } from '@/modules/auth/decorators/roles.decorator';
+import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { CreateStudentInClassroomDto } from './dto/create-student-in-classroom.dto';
 import { create } from 'domain';
 import { AddStudentByEmailDto } from './dto/add-student-by-email.dto';
 import { deleteStudentFromClassroomDto } from './dto/delete-student-from-classroom.dto';
+import { Request } from 'express';
 
 @Controller('join-class')
 export class StudentInClassroomController {
@@ -25,18 +25,21 @@ export class StudentInClassroomController {
 
   @Post(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('teacher', 'student')
-  async joinClassroom(@Req() req, @Param('id') classroomId: string) {
+  @Roles('student')
+  async joinClassroom(@Req() req: Request, @Param('id') classroomId: string) {
     await this.studentInClassroomService.joinClassroom(
-      req.user.userId,
+      req.user['sub'],
       classroomId,
     );
     return { message: 'Successfully joined the classroom!' };
   }
 
-  @Post('email/:id')
+  // student exist on system
+  // not exist?? add by email list? add by ...?
+
+  @Post(':id/students')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('teacher', 'student')
+  @Roles('teacher')
   async addStudentToClassroom(
     @Param('id') classroomId: string,
     @Body() addStudentToClassroom: AddStudentByEmailDto,

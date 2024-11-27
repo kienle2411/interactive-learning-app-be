@@ -9,7 +9,7 @@ import { TeachersService } from 'src/modules/teachers/teachers.service';
 import { StudentsService } from 'src/modules/students/students.service';
 import { SessionsService } from 'src/modules/sessions/sessions.service';
 import { DropboxService } from '../dropbox/dropbox.service';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { MediasService } from '../medias/medias.service';
 
 @Module({

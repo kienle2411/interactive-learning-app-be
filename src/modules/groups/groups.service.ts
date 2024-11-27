@@ -3,6 +3,7 @@ import { PrismaService } from '@/prisma.service';
 import { Injectable } from '@nestjs/common';
 import { UpdateGroupDto } from './dto/update-group.dto';
 import { CreateStudentInGroupDto } from '../student-in-group/dto/create-student-in-group.dto';
+import { ppid } from 'process';
 
 @Injectable()
 export class GroupsService {
@@ -56,6 +57,17 @@ export class GroupsService {
     return this.prisma.studentInGroup.createMany({
       data: [...dto],
       skipDuplicates: true,
+    });
+  }
+
+  async deleteGroup(groupId: string) {
+    await this.prisma.studentInGroup.updateMany({
+      where: { groupId: groupId },
+      data: { deletedAt: new Date() },
+    });
+    return this.prisma.group.update({
+      where: { id: groupId },
+      data: { deletedAt: new Date() },
     });
   }
 }

@@ -1,6 +1,6 @@
 import { Controller, Delete, Param, Patch, UseGuards } from '@nestjs/common';
 import { ChoiceService } from './choice.service';
-import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateChoiceDto } from './dto/update-choice.dto';
 
 @Controller('choice')

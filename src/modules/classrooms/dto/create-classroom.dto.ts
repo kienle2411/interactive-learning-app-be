@@ -1,8 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsInt,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 export class CreateClassroomDto {
-  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   classroomName: string;
@@ -13,13 +19,11 @@ export class CreateClassroomDto {
 
   @IsInt()
   @Min(1)
+  @Max(100)
+  @IsNotEmpty()
   capacity: number;
 
   @IsString()
   @IsNotEmpty()
   classroomCode: string;
-
-  @IsString()
-  @IsNotEmpty()
-  teacherId: string;
 }

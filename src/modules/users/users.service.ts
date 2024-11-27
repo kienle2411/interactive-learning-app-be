@@ -12,9 +12,8 @@ import { StudentsService } from 'src/modules/students/students.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { RolesService } from 'src/modules/roles/roles.service';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { CloudinaryService } from '@/cloudinary/cloudinary.service';
+import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { MediasService } from '../medias/medias.service';
-import { CreateMediaDto } from '../medias/dto/create-media.dto';
 
 @Injectable()
 export class UsersService {
@@ -91,10 +90,6 @@ export class UsersService {
     return this.prisma.user.findUnique({ where: { id } });
   }
 
-  async getAllUsers() {
-    return this.prisma.user.findMany();
-  }
-
   async findByUsername(username: string) {
     return this.prisma.user.findUnique({ where: { username: username } });
   }
@@ -112,20 +107,19 @@ export class UsersService {
 
   async uploadAvatar(file: Express.Multer.File, userId: string) {
     const uploadResponse = await this.cloudinaryService.uploadFile(file);
-    if (uploadResponse.url) {
-      const media = await this.mediasService.createMedia({
-        type: 'IMAGE',
-        url: uploadResponse.url,
-      });
-      await this.prisma.user.update({
-        where: { id: userId },
-        data: {
-          mediaId: media.id,
-        },
-      });
-    } else {
+    if (!uploadResponse.url) {
       return uploadResponse;
     }
-    return 'Uploaded!';
+    const media = await this.mediasService.createMedia({
+      type: 'IMAGE',
+      url: uploadResponse.url,
+    });
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: {
+        mediaId: media.id,
+      },
+    });
+    return uploadResponse;
   }
 }

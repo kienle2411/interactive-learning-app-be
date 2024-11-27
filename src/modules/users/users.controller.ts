@@ -3,24 +3,19 @@ import {
   Post,
   Controller,
   Get,
-  Param,
-  Put,
-  Delete,
-  Patch,
   UseGuards,
   UseInterceptors,
   UploadedFile,
   Req,
+  UseFilters,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { Prisma } from '@prisma/client';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { JwtAuthGuard } from '@/modules/auth/guard/jwt-auth.guard';
-import { RolesGuard } from '@/modules/auth/guard/roles.guard';
-import { Roles } from '@/modules/auth/decorator/roles.decorator';
+import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
+import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
+import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
 
 @Controller('users')
 export class UsersController {
@@ -33,15 +28,8 @@ export class UsersController {
 
   @UseGuards(JwtAuthGuard)
   @Get('profile')
-  async getProfile(@Req() req) {
-    return this.usersService.findById(req.user.userId);
-  }
-
-  @Get()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('teacher')
-  async getAllUsers() {
-    return this.usersService.getAllUsers();
+  async getProfile(@Req() req: Request) {
+    return this.usersService.findById(req.user['sub']);
   }
 
   @Post('avatar')
