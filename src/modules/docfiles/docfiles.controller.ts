@@ -20,7 +20,9 @@ import { PrismaService } from '@/prisma.service';
 import { CreateDocFileDto } from './dto/create-docfile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('docfiles')
 export class DocfilesController {
   constructor(

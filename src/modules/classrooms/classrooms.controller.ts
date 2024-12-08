@@ -29,7 +29,9 @@ import { CreateSessionDto } from '../sessions/dto/create-session.dto';
 import { Request } from 'express';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('classrooms')
 @UseInterceptors(TransformInterceptor)
 @UseFilters(GlobalExceptionFilter)

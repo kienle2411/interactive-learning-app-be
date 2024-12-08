@@ -17,6 +17,7 @@ async function bootstrap() {
     .setDescription('Describe Interactive Learning Application API')
     .setVersion('1.0')
     .addTag('app')
+    .addBearerAuth({ type: 'http', scheme: 'bearer', bearerFormat: 'JWT' })
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, documentFactory);

@@ -13,7 +13,9 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { UpdateQuestionDto } from './dto/update-question.dto';
 import { CreateChoiceDto } from '../choice/dto/create-choice.dto';
 import { CreateAnswerDto } from '../answers/dto/create-answer.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('questions')
 export class QuestionsController {
   constructor(private readonly questionsService: QuestionsService) {}
