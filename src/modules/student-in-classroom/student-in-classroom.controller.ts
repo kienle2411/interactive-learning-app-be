@@ -16,7 +16,9 @@ import { create } from 'domain';
 import { AddStudentByEmailDto } from './dto/add-student-by-email.dto';
 import { deleteStudentFromClassroomDto } from './dto/delete-student-from-classroom.dto';
 import { Request } from 'express';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('join-class')
 export class StudentInClassroomController {
   constructor(

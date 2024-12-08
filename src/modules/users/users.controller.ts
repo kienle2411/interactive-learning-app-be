@@ -16,7 +16,9 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Request } from 'express';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private usersService: UsersService) {}

@@ -17,7 +17,9 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { PaginationParams } from '@/common/helpers';
 import { CreateStudentInClassroomDto } from '../student-in-classroom/dto/create-student-in-classroom.dto';
 import { CreateStudentInGroupDto } from '../student-in-group/dto/create-student-in-group.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('groups')
 export class GroupsController {
   constructor(private readonly groupsService: GroupsService) {}

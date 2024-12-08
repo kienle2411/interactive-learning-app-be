@@ -20,6 +20,7 @@ import { RefreshTokenGuard } from './guards/refresh-token.guard';
 import { HttpExceptionFilter } from '@/common/utils/exception-filter';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -34,12 +35,14 @@ export class AuthController {
     return this.authService.signIn(authDto);
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('logout')
   logout(@Req() req: Request) {
     this.authService.logout(req.user['sub']);
   }
 
+  @ApiBearerAuth()
   @UseGuards(RefreshTokenGuard)
   @Get('refresh')
   refreshTokens(@Req() req: Request) {
