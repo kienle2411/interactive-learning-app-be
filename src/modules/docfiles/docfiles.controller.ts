@@ -11,7 +11,7 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { DocfilesService } from './docfiles.service';
 import { DropboxService } from '../dropbox/dropbox.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
@@ -35,10 +35,10 @@ export class DocfilesController {
   @UseInterceptors(FileInterceptor('file'))
   @UseGuards(JwtAuthGuard)
   async uploadDocFile(
-    @Req() req,
+    @Req() req: Request,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
-    return this.dropboxService.uploadFile(file, req.user.userId);
+    return this.dropboxService.uploadFile(file, req.user['sub']);
   }
 
   @Get(':id/download')
