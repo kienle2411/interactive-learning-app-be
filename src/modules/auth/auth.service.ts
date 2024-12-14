@@ -47,9 +47,9 @@ export class AuthService {
   async signIn(authDto: AuthDto) {
     const user = await this.usersService.findByUsername(authDto.username);
     if (!user) throw new BadRequestException('User does not exist');
-    const passwordMatches = this.passwordService.comparePassword(
-      user.password,
+    const passwordMatches = await this.passwordService.comparePassword(
       authDto.password,
+      user.password,
     );
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');

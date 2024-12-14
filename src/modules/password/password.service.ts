@@ -14,6 +14,6 @@ export class PasswordService {
     plainPassword: string,
     hashPassword: string,
   ): Promise<boolean> {
-    return argon2.verify(plainPassword, hashPassword);
+    return argon2.verify(hashPassword, plainPassword);
   }
 }
