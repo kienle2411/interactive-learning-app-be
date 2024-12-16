@@ -87,7 +87,10 @@ export class UsersService {
   }
 
   async findById(id: string) {
-    return this.prisma.user.findUnique({ where: { id } });
+    return this.prisma.user.findUnique({
+      where: { id },
+      include: { profilePicture: true },
+    });
   }
 
   async findByUsername(username: string) {
