@@ -31,7 +31,12 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   async getProfile(@Req() req: Request) {
-    return this.usersService.findById(req.user['sub']);
+    const user = await this.usersService.findById(req.user['sub']);
+    if (user) {
+      delete user.password;
+      delete user.refreshToken;
+    }
+    return user;
   }
 
   @Post('avatar')
