@@ -8,6 +8,7 @@ import {
   UploadedFile,
   Req,
   UseFilters,
+  Patch,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -17,6 +18,7 @@ import { Request } from 'express';
 import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @ApiBearerAuth()
 @Controller('users')
@@ -37,6 +39,15 @@ export class UsersController {
       delete user.refreshToken;
     }
     return user;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('profile')
+  async updateProfile(
+    @Req() req: Request,
+    @Body() updateUserDto: UpdateUserDto,
+  ) {
+    return await this.usersService.update(req.user['sub'], updateUserDto);
   }
 
   @Post('avatar')
