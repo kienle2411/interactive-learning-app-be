@@ -48,6 +48,7 @@ export class DocfilesController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const link = await this.dropboxService.downloadFile(docFileId);
+    console.log(link);
     return res.redirect(link);
   }
 }

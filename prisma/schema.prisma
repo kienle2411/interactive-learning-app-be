@@ -128,6 +128,9 @@ model Session {
   updatedAt   DateTime?     @updatedAt
   deletedAt   DateTime?
 
+  presentationId String?
+  presentation   Material? @relation(fields: [presentationId], references: [id])
+
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
@@ -135,17 +138,18 @@ model Session {
 }
 
 model SessionView {
-  id          String        @id
-  topic       String
-  description String?
-  sessionDate DateTime
-  startTime   DateTime
-  endTime     DateTime
-  createdAt   DateTime
-  updatedAt   DateTime?
-  deletedAt   DateTime?
-  classroomId String
-  status      SessionStatus
+  id             String        @id
+  topic          String
+  description    String?
+  sessionDate    DateTime
+  startTime      DateTime
+  endTime        DateTime
+  createdAt      DateTime
+  updatedAt      DateTime?
+  deletedAt      DateTime?
+  classroomId    String
+  status         SessionStatus
+  presentationId String
 
   @@map("sessionview")
 }
@@ -163,6 +167,8 @@ model Material {
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
   questions Question[]
+
+  sessions Session[]
 }
 
 model DocFile {
