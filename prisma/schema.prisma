@@ -104,11 +104,12 @@ model Classroom {
 }
 
 model Group {
-  id        String    @id @default(cuid())
-  groupName String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
+  id         String    @id @default(cuid())
+  groupName  String
+  createdAt  DateTime  @default(now())
+  totalScore Int       @default(0)
+  updatedAt  DateTime? @updatedAt
+  deletedAt  DateTime?
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
@@ -155,12 +156,14 @@ model SessionView {
 }
 
 model Material {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   title       String
   description String?
-  createdAt   DateTime @default(now())
+  url         String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
 
-  docFileId String   @unique
+  docFileId String?  @unique
   docFile   DocFile? @relation(fields: [docFileId], references: [id])
 
   classroomId String

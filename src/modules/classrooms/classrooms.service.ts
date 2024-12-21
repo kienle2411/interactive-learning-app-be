@@ -68,15 +68,23 @@ export class ClassroomsService {
   async createClassroomMaterial(
     userId: string,
     classroomId: string,
-    file: Express.Multer.File,
     createMaterialDto: CreateMaterialDto,
+    file?: Express.Multer.File,
   ): Promise<Material> {
-    const response = await this.dropboxService.uploadFile(file, userId);
+    if (file) {
+      const response = await this.dropboxService.uploadFile(file, userId);
+      return this.prisma.material.create({
+        data: {
+          ...createMaterialDto,
+          classroomId: classroomId,
+          docFileId: response.docFile.id,
+        },
+      });
+    }
     return this.prisma.material.create({
       data: {
         ...createMaterialDto,
         classroomId: classroomId,
-        docFileId: response.docFile.id,
       },
     });
   }
@@ -169,7 +177,7 @@ export class ClassroomsService {
     limit: number = 0,
   ) {
     return PaginationHelper.paginate(
-      this.prisma.sessionView,
+      this.prisma.session,
       { classroomId },
       { page, limit },
     );

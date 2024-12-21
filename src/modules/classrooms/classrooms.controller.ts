@@ -117,13 +117,13 @@ export class ClassroomsController {
     @Param('id') classroomId: string,
     @Req() req,
     @Body() createMaterialDto: CreateMaterialDto,
-    @UploadedFile('file') file: Express.Multer.File,
+    @UploadedFile('file') file?: Express.Multer.File,
   ) {
     return this.classroomsService.createClassroomMaterial(
       req.user.userId,
       classroomId,
-      file,
       createMaterialDto,
+      file,
     );
   }
 
@@ -189,11 +189,13 @@ export class ClassroomsController {
     @Query() req: PaginationParams,
   ) {
     const { page, limit } = req;
-    return await this.classroomsService.getClassroomSessions(
+    const test = await this.classroomsService.getClassroomSessions(
       classroomId,
       page,
       limit,
     );
+    console.log(test);
+    return test;
   }
 
   @Post(':id/sessions')
