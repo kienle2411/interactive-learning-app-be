@@ -8,4 +8,8 @@ export class CreateMaterialDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  url?: string;
 }

@@ -48,7 +48,6 @@ export class GroupsService {
       select: { classroomId: true },
     });
     const classroomId = classroom.classroomId;
-    studentIds.forEach((studentId) => {});
     const dto = studentIds.map((studentId) => ({
       studentId,
       groupId,
