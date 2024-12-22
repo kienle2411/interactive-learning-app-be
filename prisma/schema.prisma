@@ -138,23 +138,6 @@ model Session {
   StudentInSession StudentInSession[]
 }
 
-model SessionView {
-  id             String        @id
-  topic          String
-  description    String?
-  sessionDate    DateTime
-  startTime      DateTime
-  endTime        DateTime
-  createdAt      DateTime
-  updatedAt      DateTime?
-  deletedAt      DateTime?
-  classroomId    String
-  status         SessionStatus
-  presentationId String
-
-  @@map("sessionview")
-}
-
 model Material {
   id          String    @id @default(cuid())
   title       String
