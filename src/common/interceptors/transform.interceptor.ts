@@ -16,11 +16,16 @@ export class TransformInterceptor<T>
     next: CallHandler,
   ): Observable<BaseResponseDto<T>> {
     return next.handle().pipe(
-      map((data) => ({
-        status: 'success',
-        statusCode: context.switchToHttp().getResponse().statusCode,
-        data,
-      })),
+      map((data) => {
+        if (data.status && data.statusCode) {
+          return data;
+        }
+        return {
+          status: 'success',
+          statusCode: context.switchToHttp().getResponse().statusCode,
+          data,
+        };
+      }),
     );
   }
 }
