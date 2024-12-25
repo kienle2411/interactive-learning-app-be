@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  SetMetadata,
   StreamableFile,
   UploadedFile,
   UseGuards,
@@ -42,13 +43,12 @@ export class DocfilesController {
   }
 
   @Get(':id/download')
-  @UseGuards(JwtAuthGuard)
+  @SetMetadata('skipProvider', true)
   async downloadDocFile(
     @Param('id') docFileId: string,
     @Res({ passthrough: true }) res: Response,
   ) {
     const link = await this.dropboxService.downloadFile(docFileId);
-    console.log(link);
     return res.redirect(link);
   }
 }
