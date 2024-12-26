@@ -22,6 +22,7 @@ import { CreateDocFileDto } from './dto/create-docfile.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createReadStream } from 'fs';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import path from 'path';
 
 @ApiBearerAuth()
 @Controller('docfiles')
@@ -39,6 +40,11 @@ export class DocfilesController {
     @Req() req: Request,
     @UploadedFile('file') file: Express.Multer.File,
   ) {
+    const convertExtensions = ['.pptx', '.ppt'];
+    const fileExtension = path.extname(file.originalname).toLocaleLowerCase();
+    if (convertExtensions.includes(fileExtension)) {
+      await this.docFilesService.convertPPTXtoPNG(file);
+    }
     return this.dropboxService.uploadFile(file, req.user['sub']);
   }
 

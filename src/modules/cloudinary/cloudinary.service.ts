@@ -1,5 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary } from 'cloudinary';
+import {
+  v2 as cloudinary,
+  UploadApiErrorResponse,
+  UploadApiResponse,
+} from 'cloudinary';
 import { CloudinaryResponse } from './cloudinary-response';
 import streamifier from 'streamifier';
 
@@ -14,6 +18,19 @@ export class CloudinaryService {
         },
       );
       streamifier.createReadStream(file.buffer).pipe(uploadStream);
+    });
+  }
+
+  uploadFileFromPath(filePath: string): Promise<UploadApiResponse> {
+    return new Promise((resolve, reject) => {
+      cloudinary.uploader.upload(
+        filePath,
+        { folder: `pptx-conversions` },
+        (error: UploadApiErrorResponse, result: UploadApiResponse) => {
+          if (error) return reject(error);
+          resolve(result);
+        },
+      );
     });
   }
 }
