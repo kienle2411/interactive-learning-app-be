@@ -139,6 +139,7 @@ export class ClassroomsService {
           student: {
             select: {
               user: true,
+              groups: true,
             },
           },
           totalScore: true,

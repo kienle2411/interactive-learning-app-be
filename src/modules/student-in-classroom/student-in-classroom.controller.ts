@@ -28,10 +28,10 @@ export class StudentInClassroomController {
   @Post(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('student')
-  async joinClassroom(@Req() req: Request, @Param('id') classroomId: string) {
-    await this.studentInClassroomService.joinClassroom(
+  async joinClassroom(@Req() req: Request, @Param('id') classroomCode: string) {
+    await this.studentInClassroomService.joinClassroomByCode(
       req.user['sub'],
-      classroomId,
+      classroomCode,
     );
     return { message: 'Successfully joined the classroom!' };
   }
