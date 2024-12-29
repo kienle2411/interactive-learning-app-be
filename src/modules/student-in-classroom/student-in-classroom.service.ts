@@ -22,6 +22,27 @@ export class StudentInClassroomService {
     });
   }
 
+  async joinClassroomByCode(userId: string, code: string) {
+    const studentId = await this.usersService.getStudentIdByUserId(userId);
+    const classroom = await this.prisma.classroom.findUnique({
+      where: {
+        classroomCode: code,
+      },
+      select: {
+        id: true,
+      },
+    });
+    if (!classroom) {
+      throw new Error('Classroom not found');
+    }
+    return this.prisma.studentInClassroom.create({
+      data: {
+        classroomId: classroom.id,
+        studentId,
+      },
+    });
+  }
+
   async addStudentToClassroomByEmail(classroomId: string, emails: string[]) {
     const userIds = this.prisma.user.findMany({
       where: {

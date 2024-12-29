@@ -24,27 +24,33 @@ export class DocfilesService {
     const inputFilePath = file.path;
     const outputFilePath = path.join(
       outputDir,
-      `${path.parse(file.filename).name}.png`,
+      `${path.parse(file.filename).name}`,
     );
 
     try {
       const data = await convertAsync(
         fs.readFileSync(inputFilePath),
-        '.png',
+        '.pdf',
         undefined,
       );
 
-      fs.writeFileSync(outputFilePath, data);
+      const dataC = await convertAsync(data, '.png', undefined);
 
-      const cloudinaryResponse =
-        await this.cloudinary.uploadFileFromPath(outputFilePath);
+      fs.writeFileSync(path.join(outputDir, 'png'), dataC);
 
-      fs.unlinkSync(inputFilePath);
-      fs.unlinkSync(outputFilePath);
+      // const slides = data.toString().split('\r\n\r\n');
 
-      return {
-        cloudinaryUrl: cloudinaryResponse.secureUrl,
-      };
+      // slides.forEach((pngData, index) => {
+      //   fs.writeFileSync(path.join(outputFilePath, `${index + 1}`), pngData);
+      //   this.cloudinary.uploadFileFromPath(
+      //     path.join(outputFilePath, `${index + 1}`),
+      //   );
+      // });
+
+      //  fs.writeFileSync(outputFilePath, data);
+
+      // fs.unlinkSync(inputFilePath);
+      // fs.unlinkSync(outputFilePath);
     } catch (error) {
       throw error;
     }
