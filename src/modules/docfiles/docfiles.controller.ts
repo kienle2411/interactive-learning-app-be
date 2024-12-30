@@ -34,7 +34,13 @@ export class DocfilesController {
   ) {}
 
   @Post('upload')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: {
+        fileSize: 10 * 1024 * 1024,
+      },
+    }),
+  )
   @UseGuards(JwtAuthGuard)
   async uploadDocFile(
     @Req() req: Request,
