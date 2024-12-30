@@ -138,6 +138,7 @@ export class ClassroomsService {
         select: {
           student: {
             select: {
+              id: true,
               user: true,
               groups: true,
             },
