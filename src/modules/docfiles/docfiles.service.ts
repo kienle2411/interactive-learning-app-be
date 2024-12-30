@@ -23,26 +23,38 @@ export class DocfilesService {
       './upload/converted',
       path.parse(file.filename).name,
     );
+
+    const pngDir = path.join(
+      outputDir,
+      `png-${path.parse(file.filename).name}`,
+    );
     if (!fs.existsSync(outputDir)) {
       fs.mkdirSync(outputDir, { recursive: true });
     }
-    const outputFilePath = path.join(
-      outputDir,
-      `${path.parse(file.filename).name}`,
-    );
+    if (!fs.existsSync(pngDir)) {
+      fs.mkdirSync(pngDir, { recursive: true });
+    }
 
     try {
-      const command = `libreoffice --headless --convert-to-png --outdir "${outputDir}" "${inputFilePath}`;
-      execSync(command);
+      const convertToPDFCommand = `soffice --convert-to pdf --outdir '${outputDir}' '${inputFilePath}' --headless`;
+      execSync(convertToPDFCommand);
+      const pdfFilePath = path.join(
+        outputDir,
+        `${path.parse(file.filename).name}.pdf`,
+      );
+      const convertToPNGCommand = `pdftoppm '${pdfFilePath}' '${pngDir}/slide' -jpeg`;
+      execSync(convertToPNGCommand);
       const pngFiles = fs
-        .readdirSync(outputDir)
-        .map((file) => path.join(outputDir, file));
+        .readdirSync(pngDir)
+        .map((file) => path.join(pngDir, file));
       const uploadPromises = pngFiles.map((pngFile) =>
         this.cloudinary.uploadSingleFile(pngFile),
       );
       const uploadResults = await Promise.all(uploadPromises);
       fs.unlinkSync(inputFilePath);
+      fs.unlinkSync(pdfFilePath);
       pngFiles.forEach((file) => fs.unlinkSync(file));
+      fs.rmdirSync(pngDir, { recursive: true });
       return {
         message: 'Upload successfully!',
         slides: uploadResults.map((result) => result.secureUrl),
