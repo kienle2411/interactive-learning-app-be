@@ -45,7 +45,12 @@ export class DocfilesController {
     const convertExtensions = ['.pptx', '.ppt'];
     const fileExtension = path.extname(file.originalname).toLocaleLowerCase();
     if (convertExtensions.includes(fileExtension)) {
-      await this.docFilesService.convertPPTXtoPNG(file);
+      const uploaded = await this.docFilesService.convertPPTXtoPNG(file);
+      return this.dropboxService.uploadFile(
+        file,
+        req.user['sub'],
+        uploaded.slides,
+      );
     }
     return this.dropboxService.uploadFile(file, req.user['sub']);
   }

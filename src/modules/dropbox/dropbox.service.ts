@@ -32,7 +32,11 @@ export class DropboxService {
     this.dbx = new Dropbox({ auth: dbxAuth });
   }
 
-  async uploadFile(file: Express.Multer.File, userId: string): Promise<any> {
+  async uploadFile(
+    file: Express.Multer.File,
+    userId: string,
+    url?: string[],
+  ): Promise<any> {
     try {
       const fileExtension = file.originalname.split('.')[1].toUpperCase();
       if (!isStringKeyInEnum(fileExtension, DocType)) {
@@ -43,14 +47,26 @@ export class DropboxService {
         path: dropboxPath,
         contents: file.buffer,
       });
-      const docFile = await this.prisma.docFile.create({
-        data: {
-          type: fileExtension as DocType,
-          fileName: file.originalname,
-          path: dropboxPath,
-        },
-      });
-      return { docFile, response };
+      if (url) {
+        const docFile = await this.prisma.docFile.create({
+          data: {
+            type: fileExtension as DocType,
+            fileName: file.originalname,
+            path: dropboxPath,
+            url: url,
+          },
+        });
+        return { docFile, response };
+      } else {
+        const docFile = await this.prisma.docFile.create({
+          data: {
+            type: fileExtension as DocType,
+            fileName: file.originalname,
+            path: dropboxPath,
+          },
+        });
+        return { docFile, response };
+      }
     } catch (error) {
       console.error('Error uploading file to Dropbox: ', error);
       throw error;
