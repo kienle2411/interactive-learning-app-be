@@ -57,7 +57,7 @@ export class DocfilesService {
       fs.rmdirSync(pngDir, { recursive: true });
       return {
         message: 'Upload successfully!',
-        slides: uploadResults.map((result) => result.secureUrl),
+        slides: uploadResults.map((result) => result.secure_url),
       };
     } catch (error) {
       console.log(error);
