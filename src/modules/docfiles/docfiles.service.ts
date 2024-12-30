@@ -55,9 +55,11 @@ export class DocfilesService {
       fs.unlinkSync(pdfFilePath);
       pngFiles.forEach((file) => fs.unlinkSync(file));
       fs.rmdirSync(pngDir, { recursive: true });
+      const slides = uploadResults.map((result) => result.secure_url);
+      console.log(slides);
       return {
         message: 'Upload successfully!',
-        slides: uploadResults.map((result) => result.secure_url),
+        slides: slides,
       };
     } catch (error) {
       console.log(error);
