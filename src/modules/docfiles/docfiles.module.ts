@@ -18,6 +18,7 @@ import { CloudinaryModule } from '../cloudinary/cloudinary.module';
   imports: [
     MulterModule.register({
       dest: './uploads',
+      limits: { fileSize: 10 * 1024 * 1024 },
     }),
     CloudinaryModule,
   ],

@@ -61,7 +61,7 @@ export class DocfilesService {
       };
     } catch (error) {
       console.log(error);
-      throw error;
+      throw new Error('Failed');
     }
 
     // try {
