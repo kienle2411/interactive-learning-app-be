@@ -130,7 +130,7 @@ model Session {
   deletedAt   DateTime?
 
   presentationId String?
-  presentation   Material? @relation(fields: [presentationId], references: [id])
+  presentation   DocFile? @relation(fields: [presentationId], references: [id])
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
@@ -153,8 +153,6 @@ model Material {
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
   questions Question[]
-
-  sessions Session[]
 }
 
 model DocFile {
@@ -171,6 +169,8 @@ model DocFile {
 
   submissionId String?
   submission   Submission? @relation(fields: [submissionId], references: [id])
+
+  sessions Session[]
 }
 
 model Assignment {
