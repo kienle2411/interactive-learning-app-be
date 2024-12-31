@@ -17,6 +17,14 @@ export class DocfilesService {
     private readonly cloudinary: CloudinaryService,
   ) {}
 
+  async getDocFileDetails(id: string) {
+    return this.prisma.docFile.findUnique({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   async convertPPTXtoPNG(file: Express.Multer.File) {
     const inputFilePath = file.path;
     const outputDir = path.join(
