@@ -64,4 +64,10 @@ export class DocfilesController {
     const link = await this.dropboxService.downloadFile(docFileId);
     return res.redirect(link);
   }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getDocFileDetails(@Param('id') docFileId: string) {
+    return await this.docFilesService.getDocFileDetails(docFileId);
+  }
 }
