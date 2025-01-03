@@ -1,5 +1,5 @@
 import { PrismaService } from '@/prisma.service';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { UsersService } from '../users/users.service';
 
@@ -11,27 +11,36 @@ export class AssignmentsService {
   ) {}
 
   async getAllAssignment(userId: string) {
-    const studentId = await this.usersService.getStudentIdByUserId(userId);
-    const teacherId = await this.usersService.getTeacherIdByUserId(userId);
+    let studentId: string | null = null;
+    let teacherId: string | null = null;
+
+    try {
+      studentId = await this.usersService.getStudentIdByUserId(userId);
+    } catch (error) {
+      if (!(error instanceof NotFoundException)) {
+        throw error;
+      }
+    }
+
+    if (!studentId) {
+      teacherId = await this.usersService.getTeacherIdByUserId(userId);
+      if (!teacherId) {
+        throw new Error('User is neither a student nor a teacher');
+      }
+    }
+
     if (studentId) {
       const classrooms = await this.prisma.studentInClassroom.findMany({
-        where: {
-          studentId: studentId,
-        },
-        select: {
-          classroomId: true,
-        },
+        where: { studentId },
+        select: { classroomId: true },
       });
-      const classroomIds = await classrooms.map(
-        (classroom) => classroom.classroomId,
-      );
+      const classroomIds = classrooms.map((classroom) => classroom.classroomId);
       const assignments = await this.prisma.assignment.findMany({
-        where: {
-          classroomId: { in: classroomIds },
-        },
+        where: { classroomId: { in: classroomIds } },
       });
       return assignments;
     }
+
     if (teacherId) {
       const classrooms = await this.prisma.classroom.findMany({
         where: { teacherId },
@@ -43,6 +52,7 @@ export class AssignmentsService {
       });
       return assignments;
     }
+
     throw new Error('User is neither a student nor a teacher');
   }
 
