@@ -98,6 +98,25 @@ export class ClassroomsService {
       this.prisma.assignment,
       { classroomId },
       { page, limit },
+      {
+        select: {
+          id: true,
+          startTime: true,
+          dueTime: true,
+          title: true,
+          description: true,
+          assignmentType: true,
+          createdAt: true,
+          updatedAt: true,
+          deletedAt: true,
+          score: true,
+          classroomId: true,
+          classroom: true,
+          submissions: true,
+          questions: true,
+          StudentInAssignment: true,
+        },
+      },
     );
   }
 
