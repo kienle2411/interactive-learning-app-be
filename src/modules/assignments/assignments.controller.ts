@@ -20,6 +20,12 @@ import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 export class AssignmentsController {
   constructor(private readonly assignmentsService: AssignmentsService) {}
 
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getAllAssignment(@Req() req: Request) {
+    return await this.assignmentsService.getAllAssignment(req.user['sub']);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getAssignmentInformation(@Param('id') assignmentId: string) {

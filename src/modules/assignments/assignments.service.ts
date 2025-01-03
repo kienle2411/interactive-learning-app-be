@@ -10,6 +10,42 @@ export class AssignmentsService {
     private readonly usersService: UsersService,
   ) {}
 
+  async getAllAssignment(userId: string) {
+    const studentId = await this.usersService.getStudentIdByUserId(userId);
+    const teacherId = await this.usersService.getTeacherIdByUserId(userId);
+    if (studentId) {
+      const classrooms = await this.prisma.studentInClassroom.findMany({
+        where: {
+          studentId: studentId,
+        },
+        select: {
+          classroomId: true,
+        },
+      });
+      const classroomIds = await classrooms.map(
+        (classroom) => classroom.classroomId,
+      );
+      const assignments = await this.prisma.assignment.findMany({
+        where: {
+          classroomId: { in: classroomIds },
+        },
+      });
+      return assignments;
+    }
+    if (teacherId) {
+      const classrooms = await this.prisma.classroom.findMany({
+        where: { teacherId },
+        select: { id: true },
+      });
+      const classroomIds = classrooms.map((classroom) => classroom.id);
+      const assignments = await this.prisma.assignment.findMany({
+        where: { classroomId: { in: classroomIds } },
+      });
+      return assignments;
+    }
+    throw new Error('User is neither a student nor a teacher');
+  }
+
   async getAssignmentInformation(assignmentId: string) {
     return this.prisma.assignment.findUnique({
       where: { id: assignmentId },
