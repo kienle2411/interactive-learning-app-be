@@ -30,6 +30,23 @@ export class QuestionsService {
   async getQuestionInformation(questionId: string) {
     return this.prisma.question.findUnique({
       where: { id: questionId },
+      select: {
+        id: true,
+        questionType: true,
+        responseType: true,
+        questionTitle: true,
+        content: true,
+        timeResponse: true,
+        createdAt: true,
+        updatedAt: true,
+        deletedAt: true,
+        score: true,
+        orderInSlide: true,
+        medias: true,
+        options: true,
+        assignmentId: true,
+        docFileId: true,
+      },
     });
   }
 
