@@ -28,6 +28,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+import { SessionGateway } from './gateway/session.gateway';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { GlobalExceptionFilter } from './common/filters/global-exception.filter'
   controllers: [AppController],
   providers: [
     AppService,
+    SessionGateway,
     PrismaService,
     PasswordService,
     DropboxService,

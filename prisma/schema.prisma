@@ -151,8 +151,6 @@ model Material {
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
-
-  questions Question[]
 }
 
 model DocFile {
@@ -171,6 +169,8 @@ model DocFile {
   submission   Submission? @relation(fields: [submissionId], references: [id])
 
   sessions Session[]
+
+  questions Question[]
 }
 
 model Assignment {
@@ -213,7 +213,7 @@ model Question {
   responseType  ResponseType
   questionTitle String
   content       String?
-  timeResponse  DateTime?
+  timeResponse  Int          @default(0)
   createdAt     DateTime     @default(now())
   updatedAt     DateTime?    @updatedAt
   deletedAt     DateTime?
@@ -228,8 +228,8 @@ model Question {
   assignmentId String?
   assignment   Assignment? @relation(fields: [assignmentId], references: [id])
 
-  materialId String?
-  material   Material? @relation(fields: [materialId], references: [id])
+  docFileId String?
+  docFile   DocFile? @relation(fields: [docFileId], references: [id])
 }
 
 model Answer {
