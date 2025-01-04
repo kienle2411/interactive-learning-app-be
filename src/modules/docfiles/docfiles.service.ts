@@ -23,7 +23,11 @@ export class DocfilesService {
         id: id,
       },
       include: {
-        questions: true,
+        questions: {
+          include: {
+            options: true,
+          },
+        },
       },
     });
   }
