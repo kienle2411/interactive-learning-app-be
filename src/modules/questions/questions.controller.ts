@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -66,5 +67,11 @@ export class QuestionsController {
       questionId,
       createAnswerDto,
     );
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  async deleteQuestion(@Param('id') questionId: string) {
+    return await this.questionsService.deleteQuestion(questionId);
   }
 }
