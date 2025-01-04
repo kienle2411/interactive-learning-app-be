@@ -208,14 +208,14 @@ model Submission {
 }
 
 model Question {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   questionType  QuestionType
-  responseType  ResponseType
+  responseType  ResponseType?
   questionTitle String
   content       String?
-  timeResponse  Int          @default(0)
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime?    @updatedAt
+  timeResponse  Int           @default(0)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime?     @updatedAt
   deletedAt     DateTime?
   score         Int?
 
