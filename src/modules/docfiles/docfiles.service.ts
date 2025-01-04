@@ -22,6 +22,9 @@ export class DocfilesService {
       where: {
         id: id,
       },
+      include: {
+        questions: true,
+      },
     });
   }
 

@@ -73,4 +73,15 @@ export class QuestionsService {
       },
     });
   }
+
+  async deleteQuestion(questionId: string) {
+    await this.prisma.option.updateMany({
+      where: { questionId: questionId },
+      data: { deletedAt: new Date() },
+    });
+    return this.prisma.question.update({
+      where: { id: questionId },
+      data: { deletedAt: new Date() },
+    });
+  }
 }
