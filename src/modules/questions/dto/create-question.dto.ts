@@ -26,7 +26,7 @@ export class CreateQuestionDto {
   content?: string;
 
   @IsOptional()
-  @IsDateString()
+  @IsNumber()
   timeResponse?: number;
 
   @IsOptional()
