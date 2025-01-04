@@ -25,7 +25,7 @@ export class CreateQuestionDto {
 
   @IsOptional()
   @IsDateString()
-  timeResponse?: string;
+  timeResponse?: number;
 
   @IsOptional()
   @IsInt()
@@ -37,5 +37,5 @@ export class CreateQuestionDto {
 
   @IsOptional()
   @IsString()
-  materialId?: string;
+  docFileId?: string;
 }
