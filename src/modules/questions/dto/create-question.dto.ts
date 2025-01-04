@@ -4,6 +4,7 @@ import {
   IsEnum,
   IsInt,
   IsNotEmpty,
+  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
@@ -26,6 +27,10 @@ export class CreateQuestionDto {
   @IsOptional()
   @IsDateString()
   timeResponse?: number;
+
+  @IsOptional()
+  @IsNumber()
+  score?: number;
 
   @IsOptional()
   @IsInt()
