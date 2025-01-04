@@ -14,7 +14,8 @@ export class CreateQuestionDto {
   questionType: QuestionType;
 
   @IsEnum(ResponseType)
-  responseType: ResponseType;
+  @IsOptional()
+  responseType?: ResponseType;
 
   @IsString()
   @IsNotEmpty()
