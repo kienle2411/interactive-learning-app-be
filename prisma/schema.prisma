@@ -28,22 +28,15 @@ model User {
   profileDescription String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime? @updatedAt
-  mediaId            String?   @unique
-  profilePicture     Media?    @relation(fields: [mediaId], references: [id])
-
-  roleId String
-  role   Role   @relation(fields: [roleId], references: [id])
+  avatarUrl          String?
+  role               Role
+  refreshToken       String?
 
   teacher Teacher?
   student Student?
 
-  refreshToken String?
-}
-
-model Role {
-  id       String @id @default(cuid())
-  roleName String @unique
-  users    User[]
+  MeetingParticipant MeetingParticipant[]
+  MeetingChat        MeetingChat[]
 }
 
 model Teacher {
@@ -53,11 +46,11 @@ model Teacher {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  createdAt DateTime    @default(now())
+  updatedAt DateTime?   @updatedAt
   deletedAt DateTime?
-
-  classrooms Classroom[]
+  Classroom Classroom[]
+  Meeting   Meeting[]
 }
 
 model Student {
@@ -66,234 +59,305 @@ model Student {
   userId String @unique
   user   User   @relation(fields: [userId], references: [id])
 
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime?          @updatedAt
+  deletedAt        DateTime?
+  Submission       Submission[]
+  StudentClassroom StudentClassroom[]
+  StudentGroup     StudentGroup[]
+}
+
+model Classroom {
+  id          String    @id @default(cuid())
+  name        String
+  code        String    @unique
+  description String?
+  capacity    Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+
+  teacherId        String
+  teacher          Teacher            @relation(fields: [teacherId], references: [id])
+  Group            Group[]
+  Session          Session[]
+  Meeting          Meeting[]
+  Material         Material[]
+  StudentClassroom StudentClassroom[]
+  StudentGroup     StudentGroup[]
+}
+
+model Group {
+  id        String    @id @default(cuid())
+  name      String
+  score     Int       @default(0)
   createdAt DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   deletedAt DateTime?
 
-  answers Answer[]
-
-  classrooms StudentInClassroom[]
-
-  groups StudentInGroup[]
-
-  assignments StudentInAssignment[]
-
-  StudentInSession StudentInSession[]
-}
-
-model Classroom {
-  id            String    @id @default(cuid())
-  classroomName String
-  description   String?
-  capacity      Int
-  classroomCode String    @unique
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime? @updatedAt
-  deletedAt     DateTime?
-
-  teacherId String
-  teacher   Teacher @relation(fields: [teacherId], references: [id])
-
-  groups      Group[]
-  sessions    Session[]
-  materials   Material[]
-  assignments Assignment[]
-
-  students       StudentInClassroom[]
-  studentInGroup StudentInGroup[]
-}
-
-model Group {
-  id         String    @id @default(cuid())
-  groupName  String
-  createdAt  DateTime  @default(now())
-  totalScore Int       @default(0)
-  updatedAt  DateTime? @updatedAt
-  deletedAt  DateTime?
-
-  classroomId String
-  classroom   Classroom @relation(fields: [classroomId], references: [id])
-
-  students StudentInGroup[]
+  classroomId  String
+  classroom    Classroom      @relation(fields: [classroomId], references: [id])
+  StudentGroup StudentGroup[]
 }
 
 model Session {
-  id          String        @id @default(cuid())
-  topic       String
+  id          String    @id @default(cuid())
+  title       String
   description String?
-  status      SessionStatus
-  sessionDate DateTime
   startTime   DateTime
   endTime     DateTime
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime?     @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  createdBy   String?
   deletedAt   DateTime?
+  fileId      String?
+  // file       File? @relation(fields: [fileId], references: [id])
 
-  presentationId String?
-  presentation   DocFile? @relation(fields: [presentationId], references: [id])
+  classroomId String
+  classroom   Classroom @relation(fields: [classroomId], references: [id])
+}
+
+model SlidePage {
+  id         String @id @default(cuid())
+  slideOrder Int
+  slideUrl   String
+
+  fileId String?
+  file   File?   @relation(fields: [fileId], references: [id])
+}
+
+model Meeting {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  recordUrl   String?
+  startTime   DateTime
+  endTime     DateTime
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
-  StudentInSession StudentInSession[]
+  hostId             String?
+  host               Teacher?             @relation(fields: [hostId], references: [id])
+  MeetingParticipant MeetingParticipant[]
+  MeetingChat        MeetingChat[]
+}
+
+model MeetingParticipant {
+  id       String   @id @default(cuid())
+  joinedAt DateTime @default(now())
+
+  meetingId String
+  meeting   Meeting @relation(fields: [meetingId], references: [id])
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+}
+
+model MeetingChat {
+  id      String   @id @default(cuid())
+  message String
+  sendAt  DateTime @default(now())
+
+  senderId String?
+  sender   User?   @relation(fields: [senderId], references: [id])
+
+  meetingId String
+  meeting   Meeting @relation(fields: [meetingId], references: [id])
 }
 
 model Material {
   id          String    @id @default(cuid())
   title       String
   description String?
-  url         String?
+  type        String
+  visibleTo   String?
+  createdBy   String?
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
-
-  docFileId String?  @unique
-  docFile   DocFile? @relation(fields: [docFileId], references: [id])
+  deletedAt   DateTime?
 
   classroomId String
-  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  classroom   Classroom    @relation(fields: [classroomId], references: [id])
+  File        File[]
+  Assignment  Assignment[]
 }
 
-model DocFile {
-  id        String    @id @default(cuid())
-  fileName  String
-  type      DocType
-  path      String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
-  url       String[]
+model File {
+  id         String   @id @default(cuid())
+  name       String
+  url        String
+  type       String
+  uploadedBy String?
+  createdAt  DateTime @default(now())
 
-  material Material?
-
-  submissionId String?
-  submission   Submission? @relation(fields: [submissionId], references: [id])
-
-  sessions Session[]
-
-  questions Question[]
+  materialId     String?
+  material       Material?        @relation(fields: [materialId], references: [id])
+  SlidePage      SlidePage[]
+  Submission     Submission[]
+  SubmissionFile SubmissionFile[]
 }
 
 model Assignment {
-  id             String         @id @default(cuid())
-  startTime      DateTime
-  dueTime        DateTime
-  title          String
-  description    String
-  assignmentType AssignmentType
-  createdAt      DateTime?      @default(now())
-  updatedAt      DateTime?      @updatedAt
-  deletedAt      DateTime?
-  score          Int?
+  id          String    @id @default(cuid())
+  title       String
+  description String
+  startTime   DateTime
+  dueTime     DateTime
+  createdAt   DateTime? @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
 
-  classroomId String
-  classroom   Classroom @relation(fields: [classroomId], references: [id])
+  materialId String?
+  material   Material? @relation(fields: [materialId], references: [id])
 
   submissions Submission[]
   questions   Question[]
-
-  StudentInAssignment StudentInAssignment[]
+  QuizAttemp  QuizAttemp[]
 }
 
 model Submission {
-  id        String           @id @default(cuid())
-  status    SubmissionStatus
-  createdAt DateTime         @default(now())
-  updatedAt DateTime?        @updatedAt
-  deletedAt DateTime?
-
-  docFile DocFile[]
+  id          String           @id @default(cuid())
+  status      SubmissionStatus
+  score       Int?
+  feedback    String?
+  submittedAt DateTime?        @default(now())
+  updatedAt   DateTime?        @updatedAt
+  deletedAt   DateTime?
 
   assignmentId String
   assignment   Assignment @relation(fields: [assignmentId], references: [id])
-}
-
-model Question {
-  id            String        @id @default(cuid())
-  questionType  QuestionType
-  responseType  ResponseType?
-  questionTitle String
-  content       String?
-  timeResponse  Int           @default(0)
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime?     @updatedAt
-  deletedAt     DateTime?
-  score         Int?
-
-  orderInSlide Int?
-
-  medias  Media[]
-  answers Answer[]
-  options Option[]
-
-  assignmentId String?
-  assignment   Assignment? @relation(fields: [assignmentId], references: [id])
-
-  docFileId String?
-  docFile   DocFile? @relation(fields: [docFileId], references: [id])
-}
-
-model Answer {
-  id        String   @id @default(cuid())
-  content   String
-  isCorrect Boolean?
 
   studentId String
   student   Student @relation(fields: [studentId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
+  fileId         String?
+  file           File?            @relation(fields: [fileId], references: [id])
+  SubmissionFile SubmissionFile[]
+
+  @@unique([assignmentId, studentId])
+}
+
+model SubmissionFile {
+  id         String   @id @default(cuid())
+  uploadedAt DateTime @default(now())
+
+  submissionId String
+  submission   Submission @relation(fields: [submissionId], references: [id])
+
+  fileId String
+  file   File   @relation(fields: [fileId], references: [id])
+}
+
+model Quiz {
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  timeLimit   Int?      @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
+  deletedAt   DateTime?
+  createdBy   String?
+}
+
+model QuizAttemp {
+  id        String    @id @default(cuid())
+  startTime DateTime  @default(now())
+  endTime   DateTime? @updatedAt
+  score     Int?
+
+  quizId String
+  quiz   Assignment @relation(fields: [quizId], references: [id])
+}
+
+model Question {
+  id             String           @id @default(cuid())
+  content        String?
+  timeLimit      Int?             @default(0)
+  type           QuestionType
+  createdBy      String?
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime?        @updatedAt
+  deletedAt      DateTime?
+  score          Int?
+  Assignment     Assignment?      @relation(fields: [assignmentId], references: [id])
+  assignmentId   String?
+  QuestionLink   QuestionLink[]
+  QuestionEssay  QuestionEssay[]
+  QuestionOption QuestionOption[]
+  Answer         Answer[]
+}
+
+model QuestionLink {
+  id         String     @id @default(cuid())
+  linkedType LinkedType
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+
+  linkedId String
+  // Link to Quiz, Slide or Assignment
+}
+
+model QuestionEssay {
+  id            String @id @default(cuid())
+  correctAnswer String
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+}
+
+model QuestionOption {
+  id        String   @id @default(cuid())
+  option    String
+  isCorrect Boolean?
+
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id])
+  Answer     Answer[]
+}
+
+model Answer {
+  id        String     @id @default(cuid())
+  type      AnswerType
+  text      String?
+  isCorrect Boolean?
+  score     Int?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime?  @updatedAt
   deletedAt DateTime?
+  createdBy String?
+
+  contextId String?
+  // Reference to the context of the answer (QuizAttemp, Submission)
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
 
   selectedOptionId String?
-  selectedOption   Option? @relation(fields: [selectedOptionId], references: [id])
+  selectedOption   QuestionOption? @relation(fields: [selectedOptionId], references: [id])
 }
 
-model Option {
-  id              String  @id @default(cuid())
-  content         String
-  isCorrectAnswer Boolean
+model StudentClassroom {
+  id       String    @id @default(cuid())
+  socre    Int?      @default(0)
+  joinedAt DateTime  @default(now())
+  leftAt   DateTime?
 
-  questionId String
-  question   Question @relation(fields: [questionId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime? @updatedAt
-  deletedAt DateTime?
-
-  answer Answer[]
-}
-
-model Media {
-  id        String    @id @default(cuid())
-  type      MediaType
-  url       String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
-
-  user       User?
-  questionId String?
-  question   Question? @relation(fields: [questionId], references: [id])
-}
-
-model StudentInClassroom {
   studentId   String
   student     Student   @relation(fields: [studentId], references: [id])
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-
-  totalScore Decimal @default(0)
-
-  @@id([studentId, classroomId])
+  @@unique([studentId, classroomId])
 }
 
-model StudentInGroup {
+model StudentGroup {
+  id          String    @id @default(cuid())
   studentId   String
   student     Student   @relation(fields: [studentId], references: [id])
   groupId     String
@@ -304,38 +368,7 @@ model StudentInGroup {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
-  @@id([studentId, classroomId])
-}
-
-model StudentInAssignment {
-  studentId    String
-  student      Student    @relation(fields: [studentId], references: [id])
-  assignmentId String
-  assignment   Assignment @relation(fields: [assignmentId], references: [id])
-  score        Int?
-
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-
-  @@id([studentId, assignmentId])
-}
-
-model StudentInSession {
-  studentId String
-  student   Student   @relation(fields: [studentId], references: [id])
-  sessionId String
-  session   Session   @relation(fields: [sessionId], references: [id])
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-
-  @@id([studentId, sessionId])
-}
-
-enum QuestionType {
-  CHOICE
-  FILL
-  WORDCLOUD
-  TEXT
+  @@unique([studentId, groupId])
 }
 
 enum ResponseType {
@@ -374,13 +407,35 @@ enum DocType {
   JPG
 }
 
-enum MediaType {
-  IMAGE
-  VIDEO
-}
-
 enum Gender {
   MALE
   FEMALE
   OTHER
+}
+
+enum AnswerType {
+  QUIZ
+  SUBMISSION
+}
+
+enum MaterialType {
+  LESSON
+  ASSIGNMENT
+  QUIZ
+}
+
+enum LinkedType {
+  QUIZ
+  SLIDE
+  ASSIGNMENT
+}
+
+enum QuestionType {
+  MCQ
+  ESSAY
+}
+
+enum Role {
+  STUDENT
+  TEACHER
 }
