@@ -372,6 +372,9 @@ model StudentClassroom {
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
 
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+
   @@unique([studentId, classroomId])
 }
 

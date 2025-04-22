@@ -233,4 +233,18 @@ export class ClassroomController {
       createMeetingDto,
     );
   }
+
+  @Post('join')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
+  async joinClassroom(@Query() code: string, @Req() req: Request) {
+    return await this.classroomService.joinClassroom(code, req.user['sub']);
+  }
+
+  @Delete('leave')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('student')
+  async leaveClassroom(@Query() code: string, @Req() req: Request) {
+    return await this.classroomService.leaveClassroom(code, req.user['sub']);
+  }
 }

@@ -235,4 +235,20 @@ export class ClassroomService {
       },
     });
   }
+
+  async joinClassroom(code: string, userId: string) {
+    const studentId = await this.userService.getStudentIdByUserId(userId);
+    const classroom = await this.prisma.classroom.findUnique({
+      where: { code },
+    });
+    if (!classroom) {
+      throw new UnauthorizedException('Classroom not found');
+    }
+    return this.prisma.studentClassroom.create({
+      data: {
+        studentId,
+        classroomId: classroom.id,
+      },
+    });
+  }
 }
