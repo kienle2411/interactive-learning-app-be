@@ -9,7 +9,11 @@ export class CreateMaterialDto {
   @IsString()
   description?: string;
 
-  @IsOptional()
   @IsString()
-  url?: string;
+  @IsNotEmpty()
+  type: string;
+
+  @IsString()
+  @IsOptional()
+  visibleTo?: string;
 }

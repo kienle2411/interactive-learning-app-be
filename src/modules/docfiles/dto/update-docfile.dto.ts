@@ -1,16 +1,16 @@
-import { DocType } from '@prisma/client';
-import { IsEnum, IsOptional, IsString } from 'class-validator';
+// import { DocType } from '@prisma/client';
+// import { IsEnum, IsOptional, IsString } from 'class-validator';
 
-export class UpdateDocFileDto {
-  @IsOptional()
-  @IsEnum(DocType)
-  type?: DocType;
+// export class UpdateDocFileDto {
+//   @IsOptional()
+//   @IsEnum(DocType)
+//   type?: DocType;
 
-  @IsOptional()
-  @IsString()
-  url?: string;
+//   @IsOptional()
+//   @IsString()
+//   url?: string;
 
-  @IsOptional()
-  @IsString()
-  submissionId?: string;
-}
+//   @IsOptional()
+//   @IsString()
+//   submissionId?: string;
+// }

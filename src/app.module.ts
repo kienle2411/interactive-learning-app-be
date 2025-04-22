@@ -1,26 +1,19 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './modules/auth/auth.module';
-import { UsersModule } from './modules/users/users.module';
-import { RolesModule } from './modules/roles/roles.module';
-import { TeachersModule } from './modules/teachers/teachers.module';
-import { StudentsModule } from './modules/students/students.module';
-import { ClassroomsModule } from './modules/classrooms/classrooms.module';
-import { SessionsModule } from './modules/sessions/sessions.module';
-import { GroupsModule } from './modules/groups/groups.module';
-import { AssignmentsModule } from './modules/assignments/assignments.module';
-import { SubmissionsModule } from './modules/submissions/submissions.module';
-import { MaterialsModule } from './modules/materials/materials.module';
-import { QuestionsModule } from './modules/questions/questions.module';
-import { AnswersModule } from './modules/answers/answers.module';
+import { UserModule } from './modules/user/user.module';
+import { TeacherModule } from './modules/teacher/teacher.module';
+import { StudentModule } from './modules/student/student.module';
+import { ClassroomModule } from './modules/classroom/classroom.module';
+import { SessionModule } from './modules/session/sessions.module';
+import { GroupModule } from './modules/group/group.module';
+import { AssignmentModule } from './modules/assignment/assignment.module';
+import { SubmissionModule } from './modules/submission/submission.module';
+import { QuestionModule } from './modules/question/question.module';
+import { AnswersModule } from './modules/answer/answer.module';
 import { PasswordService } from './modules/password/password.service';
 import { PrismaService } from './prisma.service';
-import { DocfilesModule } from './modules/docfiles/docfiles.module';
-import { MediasModule } from './modules/medias/medias.module';
-import { StudentInClassroomModule } from './modules/student-in-classroom/student-in-classroom.module';
-import { StudentInGroupModule } from './modules/student-in-group/student-in-group.module';
-import { ChoiceModule } from './modules/choice/choice.module';
 import { DropboxService } from './modules/dropbox/dropbox.service';
 import { DropboxModule } from './modules/dropbox/dropbox.module';
 import { ConfigModule } from '@nestjs/config';
@@ -33,23 +26,16 @@ import { SessionGateway } from './gateway/session.gateway';
 @Module({
   imports: [
     AuthModule,
-    UsersModule,
-    RolesModule,
-    TeachersModule,
-    StudentsModule,
-    ClassroomsModule,
-    SessionsModule,
-    GroupsModule,
-    AssignmentsModule,
-    SubmissionsModule,
-    MaterialsModule,
-    QuestionsModule,
+    UserModule,
+    TeacherModule,
+    StudentModule,
+    ClassroomModule,
+    SessionModule,
+    GroupModule,
+    AssignmentModule,
+    SubmissionModule,
+    QuestionModule,
     AnswersModule,
-    DocfilesModule,
-    MediasModule,
-    StudentInClassroomModule,
-    StudentInGroupModule,
-    ChoiceModule,
     DropboxModule,
     ConfigModule.forRoot({
       isGlobal: true,

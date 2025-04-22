@@ -13,7 +13,7 @@ import {
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { Public } from './decorators/public.decorator';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
@@ -50,4 +50,14 @@ export class AuthController {
     const refreshToken = req.user['refreshToken'];
     return this.authService.refreshToken(userId, refreshToken);
   }
+
+  // @Post('forgot-password')
+  // forgotPassword(@Body('email') email: string) {
+  //   return this.authService.forgotPassword(email);
+  // }
+
+  // @Post('reset-password')
+  // resetPassword(@Body() body: { token: string; password: string }) {
+  //   return this.authService.resetPassword(body.token, body.password);
+  // }
 }

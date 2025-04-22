@@ -27,11 +27,7 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('User not authenticated');
     }
 
-    const role = await this.prisma.role.findFirst({
-      where: { id: user.roleId },
-    });
-
-    const hasRole = requiredRoles.includes(role.roleName);
+    const hasRole = requiredRoles.includes(user.role);
 
     if (!hasRole) {
       throw new ForbiddenException(

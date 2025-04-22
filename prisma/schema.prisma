@@ -51,6 +51,8 @@ model Teacher {
   deletedAt DateTime?
   Classroom Classroom[]
   Meeting   Meeting[]
+  Quiz      Quiz[]
+  Question  Question[]
 }
 
 model Student {
@@ -65,6 +67,7 @@ model Student {
   Submission       Submission[]
   StudentClassroom StudentClassroom[]
   StudentGroup     StudentGroup[]
+  QuizAttempt      QuizAttempt[]
 }
 
 model Classroom {
@@ -111,7 +114,7 @@ model Session {
   createdBy   String?
   deletedAt   DateTime?
   fileId      String?
-  // file       File? @relation(fields: [fileId], references: [id])
+  file        File?     @relation(fields: [fileId], references: [id])
 
   classroomId String
   classroom   Classroom @relation(fields: [classroomId], references: [id])
@@ -188,18 +191,20 @@ model Material {
 }
 
 model File {
-  id         String   @id @default(cuid())
+  id         String    @id @default(cuid())
   name       String
   url        String
   type       String
   uploadedBy String?
-  createdAt  DateTime @default(now())
+  createdAt  DateTime  @default(now())
+  deletedAt  DateTime?
 
   materialId     String?
   material       Material?        @relation(fields: [materialId], references: [id])
   SlidePage      SlidePage[]
   Submission     Submission[]
   SubmissionFile SubmissionFile[]
+  Session        Session[]
 }
 
 model Assignment {
@@ -215,9 +220,8 @@ model Assignment {
   materialId String?
   material   Material? @relation(fields: [materialId], references: [id])
 
-  submissions Submission[]
-  questions   Question[]
-  QuizAttemp  QuizAttemp[]
+  submission  Submission[]
+  QuizAttempt QuizAttempt[]
 }
 
 model Submission {
@@ -261,14 +265,19 @@ model Quiz {
   createdAt   DateTime  @default(now())
   updatedAt   DateTime? @updatedAt
   deletedAt   DateTime?
-  createdBy   String?
+
+  teacherId String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
 }
 
-model QuizAttemp {
+model QuizAttempt {
   id        String    @id @default(cuid())
   startTime DateTime  @default(now())
   endTime   DateTime? @updatedAt
   score     Int?
+
+  studentId String
+  student   Student @relation(fields: [studentId], references: [id])
 
   quizId String
   quiz   Assignment @relation(fields: [quizId], references: [id])
@@ -279,17 +288,17 @@ model Question {
   content        String?
   timeLimit      Int?             @default(0)
   type           QuestionType
-  createdBy      String?
   createdAt      DateTime         @default(now())
   updatedAt      DateTime?        @updatedAt
   deletedAt      DateTime?
   score          Int?
-  Assignment     Assignment?      @relation(fields: [assignmentId], references: [id])
-  assignmentId   String?
   QuestionLink   QuestionLink[]
   QuestionEssay  QuestionEssay[]
   QuestionOption QuestionOption[]
   Answer         Answer[]
+
+  teacherId String?
+  teacher   Teacher? @relation(fields: [teacherId], references: [id])
 }
 
 model QuestionLink {
@@ -301,6 +310,8 @@ model QuestionLink {
 
   linkedId String
   // Link to Quiz, Slide or Assignment
+
+  deletedAt DateTime?
 }
 
 model QuestionEssay {
@@ -309,6 +320,10 @@ model QuestionEssay {
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model QuestionOption {
@@ -319,6 +334,10 @@ model QuestionOption {
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
   Answer     Answer[]
+
+  deletedAt DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 }
 
 model Answer {
@@ -333,7 +352,7 @@ model Answer {
   createdBy String?
 
   contextId String?
-  // Reference to the context of the answer (QuizAttemp, Submission)
+  // Reference to the context of the answer (QuizAttempt, Submission)
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
@@ -368,7 +387,7 @@ model StudentGroup {
   createdAt DateTime  @default(now())
   deletedAt DateTime?
 
-  @@unique([studentId, groupId])
+  @@unique([studentId, classroomId])
 }
 
 enum ResponseType {
@@ -379,8 +398,8 @@ enum ResponseType {
 }
 
 enum AssignmentType {
+  ASSIGNMENT
   QUIZ
-  HOMEWORK
 }
 
 enum SessionStatus {

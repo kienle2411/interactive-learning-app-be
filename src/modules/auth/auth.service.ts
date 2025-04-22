@@ -6,17 +6,15 @@ import {
 import * as argon2 from 'argon2';
 import { JwtService } from '@nestjs/jwt';
 import { PasswordService } from 'src/modules/password/password.service';
-import { UsersService } from 'src/modules/users/users.service';
-import { CreateUserDto } from '../users/dto/create-user.dto';
+import { UserService } from '@/modules/user/user.service';
+import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
-import { access } from 'fs';
 import { AuthDto } from './dto/auth.dto';
-import { handlePrismaError } from '@/common/utils/prisma-error-handler';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private userService: UserService,
     private readonly passwordService: PasswordService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
@@ -31,21 +29,21 @@ export class AuthService {
     const hashedPassword = await this.passwordService.hashPassword(
       createUserDto.password,
     );
-    const newUser = await this.usersService.createUser({
+    const newUser = await this.userService.createUser({
       ...createUserDto,
       password: hashedPassword,
     });
     const tokens = await this.getTokens(
       newUser.id,
       newUser.username,
-      newUser.roleId,
+      newUser.role,
     );
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
     return tokens;
   }
 
   async signIn(authDto: AuthDto) {
-    const user = await this.usersService.findByUsername(authDto.username);
+    const user = await this.userService.findByUsername(authDto.username);
     if (!user) throw new BadRequestException('User does not exist');
     const passwordMatches = await this.passwordService.comparePassword(
       authDto.password,
@@ -53,18 +51,18 @@ export class AuthService {
     );
     if (!passwordMatches)
       throw new BadRequestException('Password is incorrect');
-    const tokens = await this.getTokens(user.id, user.username, user.roleId);
+    const tokens = await this.getTokens(user.id, user.username, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
 
   async logout(userId: string) {
-    return this.usersService.update(userId, { refreshToken: null });
+    return this.userService.update(userId, { refreshToken: null });
   }
 
   async updateRefreshToken(userId: string, refreshToken: string) {
     const hashedRefreshToken = await this.hashData(refreshToken);
-    await this.usersService.update(userId, {
+    await this.userService.update(userId, {
       refreshToken: hashedRefreshToken,
     });
   }
@@ -73,13 +71,13 @@ export class AuthService {
     return argon2.hash(data);
   }
 
-  async getTokens(userId: string, username: string, roleId: string) {
+  async getTokens(userId: string, username: string, role: string) {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(
         {
           sub: userId,
           username,
-          roleId,
+          role,
         },
         {
           secret: this.configService.get<string>('JWT'),
@@ -90,7 +88,7 @@ export class AuthService {
         {
           sub: userId,
           username,
-          roleId,
+          role,
         },
         {
           secret: this.configService.get<string>('JWT_REFRESH'),
@@ -106,7 +104,7 @@ export class AuthService {
   }
 
   async refreshToken(userId: string, refreshToken: string) {
-    const user = await this.usersService.findById(userId);
+    const user = await this.userService.findById(userId);
     if (!user || !user.refreshToken) {
       throw new ForbiddenException('Access Denied');
     }
@@ -117,8 +115,27 @@ export class AuthService {
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access Denied');
     }
-    const tokens = await this.getTokens(user.id, user.username, user.roleId);
+    const tokens = await this.getTokens(user.id, user.username, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
     return tokens;
   }
+
+  // async forgotPassword(email: string) {
+  //   const user = await this.usersService.findByEmail(email);
+  //   if (!user) {
+  //     throw new BadRequestException('User does not exist');
+  //   }
+  //   const resetToken = await this.passwordService.generateResetToken(user.id);
+  //   // Send email with reset token
+  //   return resetToken;
+  // }
+
+  // async resetPassword(token: string, password: string) {
+  //   const userId = await this.passwordService.verifyResetToken(token);
+  //   if (!userId) {
+  //     throw new BadRequestException('Invalid or expired token');
+  //   }
+  //   const hashedPassword = await this.passwordService.hashPassword(password);
+  //   await this.usersService.update(userId, { password: hashedPassword });
+  // }
 }
