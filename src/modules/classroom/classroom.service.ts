@@ -251,4 +251,19 @@ export class ClassroomService {
       },
     });
   }
+
+  async leaveClassroom(classroomId: string, userId: string) {
+    const studentId = await this.userService.getStudentIdByUserId(userId);
+    return this.prisma.studentClassroom.update({
+      where: {
+        studentId_classroomId: {
+          studentId,
+          classroomId,
+        },
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }

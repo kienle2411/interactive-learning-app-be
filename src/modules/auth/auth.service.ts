@@ -10,6 +10,8 @@ import { UserService } from '@/modules/user/user.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import { AuthDto } from './dto/auth.dto';
+import { EmailService } from '../email/email.service';
+import { MailgunService } from 'nestjs-mailgun';
 
 @Injectable()
 export class AuthService {
@@ -18,14 +20,9 @@ export class AuthService {
     private readonly passwordService: PasswordService,
     private readonly configService: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly emailService: EmailService,
   ) {}
   async signUp(createUserDto: CreateUserDto) {
-    // const userExists = await this.usersService.findByUsername(
-    //   createUserDto.username,
-    // );
-    // if (userExists) {
-    //   throw new BadRequestException('User already exists');
-    // }
     const hashedPassword = await this.passwordService.hashPassword(
       createUserDto.password,
     );
@@ -39,6 +36,10 @@ export class AuthService {
       newUser.role,
     );
     await this.updateRefreshToken(newUser.id, tokens.refreshToken);
+    await this.emailService.sendWelcomeEmail(
+      createUserDto.email,
+      createUserDto.firstName,
+    );
     return tokens;
   }
 
@@ -120,22 +121,31 @@ export class AuthService {
     return tokens;
   }
 
-  // async forgotPassword(email: string) {
-  //   const user = await this.usersService.findByEmail(email);
-  //   if (!user) {
-  //     throw new BadRequestException('User does not exist');
-  //   }
-  //   const resetToken = await this.passwordService.generateResetToken(user.id);
-  //   // Send email with reset token
-  //   return resetToken;
-  // }
+  async forgotPassword(email: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new BadRequestException('User does not exist');
+    }
+    const resetToken = await this.jwtService.signAsync(
+      { sub: user.id },
+      {
+        secret: this.configService.get<string>('JWT_RESET'),
+        expiresIn: '1h',
+      },
+    );
+    return await this.emailService.sendPasswordResetEmail(email, resetToken);
+  }
 
-  // async resetPassword(token: string, password: string) {
-  //   const userId = await this.passwordService.verifyResetToken(token);
-  //   if (!userId) {
-  //     throw new BadRequestException('Invalid or expired token');
-  //   }
-  //   const hashedPassword = await this.passwordService.hashPassword(password);
-  //   await this.usersService.update(userId, { password: hashedPassword });
-  // }
+  async resetPassword(token: string, password: string) {
+    const decodedToken = await this.jwtService.verifyAsync(token, {
+      secret: this.configService.get<string>('JWT_RESET'),
+    });
+    const userId = decodedToken.sub;
+    if (!userId) {
+      throw new BadRequestException('Invalid or expired token');
+    }
+    const user = await this.userService.findById(userId);
+    const hashedPassword = await this.passwordService.hashPassword(password);
+    return await this.userService.update(userId, { password: hashedPassword });
+  }
 }

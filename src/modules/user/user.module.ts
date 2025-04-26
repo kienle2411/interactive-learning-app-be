@@ -11,8 +11,12 @@ import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { AssignmentService } from '../assignment/assignment.service';
 import { FileService } from '../file/file.service';
 import { DropboxService } from '../dropbox/dropbox.service';
+import { EmailService } from '../email/email.service';
+import { MailgunService } from 'nestjs-mailgun';
+import { EmailModule } from '../email/email.module';
 
 @Module({
+  imports: [EmailModule],
   providers: [
     AuthService,
     UserService,

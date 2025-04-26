@@ -22,6 +22,10 @@ import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 import { SessionGateway } from './gateway/session.gateway';
+import { EmailService } from './modules/email/email.service';
+import { EmailModule } from './modules/email/email.module';
+import { JwtService } from '@nestjs/jwt';
+import { MailgunModule } from 'nestjs-mailgun';
 
 @Module({
   imports: [
@@ -41,6 +45,7 @@ import { SessionGateway } from './gateway/session.gateway';
       isGlobal: true,
     }),
     CloudinaryModule,
+    EmailModule,
   ],
   controllers: [AppController],
   providers: [
@@ -57,6 +62,8 @@ import { SessionGateway } from './gateway/session.gateway';
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
     },
+    EmailService,
+    JwtService,
   ],
 })
 export class AppModule {}

@@ -51,13 +51,13 @@ export class AuthController {
     return this.authService.refreshToken(userId, refreshToken);
   }
 
-  // @Post('forgot-password')
-  // forgotPassword(@Body('email') email: string) {
-  //   return this.authService.forgotPassword(email);
-  // }
+  @Post('forgot-password')
+  forgotPassword(@Body() { email }: { email: string }) {
+    return this.authService.forgotPassword(email);
+  }
 
-  // @Post('reset-password')
-  // resetPassword(@Body() body: { token: string; password: string }) {
-  //   return this.authService.resetPassword(body.token, body.password);
-  // }
+  @Post('reset-password')
+  resetPassword(@Body() body: { token: string; password: string }) {
+    return this.authService.resetPassword(body.token, body.password);
+  }
 }

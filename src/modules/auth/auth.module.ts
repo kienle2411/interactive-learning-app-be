@@ -14,6 +14,7 @@ import { StudentService } from '@/modules/student/students.service';
 import { JwtStrategy } from './guards/jwt.strategy';
 import { RefreshTokenStrategy } from './strategy/refresh-token.strategy';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
+import { EmailService } from '../email/email.service';
 dotenv.config();
 
 @Module({
@@ -30,6 +31,7 @@ dotenv.config();
     JwtStrategy,
     RefreshTokenStrategy,
     CloudinaryService,
+    EmailService,
   ],
 })
 export class AuthModule {}
