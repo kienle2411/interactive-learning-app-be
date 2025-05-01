@@ -149,18 +149,6 @@ export class ClassroomService {
       this.prisma.studentClassroom,
       { classroomId },
       { page, limit },
-      {
-        select: {
-          student: {
-            select: {
-              id: true,
-              user: true,
-              groups: true,
-            },
-          },
-          totalScore: true,
-        },
-      },
     );
   }
 

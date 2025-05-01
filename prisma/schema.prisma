@@ -363,7 +363,7 @@ model Answer {
 
 model StudentClassroom {
   id       String    @id @default(cuid())
-  socre    Int?      @default(0)
+  score    Int?      @default(0)
   joinedAt DateTime  @default(now())
   leftAt   DateTime?
 
