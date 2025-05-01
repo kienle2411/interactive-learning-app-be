@@ -4,6 +4,7 @@ import * as dotenv from 'dotenv';
 import * as bodyParser from 'body-parser';
 import { BadRequestException, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 
 dotenv.config();
 
@@ -37,6 +38,8 @@ async function bootstrap() {
     .build();
   const documentFactory = () => SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('documentation', app, documentFactory);
+
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.listen(3001);
 }

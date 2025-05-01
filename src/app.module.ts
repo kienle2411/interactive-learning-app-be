@@ -21,11 +21,16 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
-import { SessionGateway } from './gateway/session.gateway';
 import { EmailService } from './modules/email/email.service';
 import { EmailModule } from './modules/email/email.module';
 import { JwtService } from '@nestjs/jwt';
 import { MailgunModule } from 'nestjs-mailgun';
+import { MeetingGateway } from './modules/meeting/meeting.gateway';
+import { MeetingModule } from './modules/meeting/meeting.module';
+import { SessionGateway } from './modules/session/session.gateway';
+import { QuizGateway } from './modules/quiz/quiz.gateway';
+import { QuizModule } from './modules/quiz/quiz.module';
+import { QuizService } from './modules/quiz/quiz.service';
 
 @Module({
   imports: [
@@ -46,11 +51,12 @@ import { MailgunModule } from 'nestjs-mailgun';
     }),
     CloudinaryModule,
     EmailModule,
+    MeetingModule,
+    QuizModule,
   ],
   controllers: [AppController],
   providers: [
     AppService,
-    SessionGateway,
     PrismaService,
     PasswordService,
     DropboxService,
@@ -64,6 +70,9 @@ import { MailgunModule } from 'nestjs-mailgun';
     },
     EmailService,
     JwtService,
+    QuizService,
+    SessionGateway,
+    QuizGateway,
   ],
 })
 export class AppModule {}
