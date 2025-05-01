@@ -20,7 +20,7 @@ import { Roles } from '@/modules/auth/decorators/roles.decorator';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { PaginationParams } from '@/common/helpers';
-import { CreateMaterialDto } from '../materials/dto/create-material.dto';
+import { CreateMaterialDto } from '../material/dto/create-material.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateAssignmentDto } from '../assignment/dto/create-assignment.dto';
 import { CreateGroupDto } from '../group/dto/create-group.dto';

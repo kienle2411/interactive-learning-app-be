@@ -5,14 +5,14 @@ import { Material } from '@prisma/client';
 import { UserService } from '@/modules/user/user.service';
 import { UpdateClassroomDto } from './dto/update-classroom-dto';
 import { PaginationHelper } from '@/common/helpers';
-import { CreateMaterialDto } from '../materials/dto/create-material.dto';
+import { CreateMaterialDto } from '../material/dto/create-material.dto';
 import { DropboxService } from '../dropbox/dropbox.service';
 import { CreateGroupDto } from '../group/dto/create-group.dto';
 import { CreateSessionDto } from '../session/dto/create-session.dto';
 import { CreateMeetingDto } from '@/modules/meeting/dto/create-meeting.dto';
 import { FileService } from '@/modules/file/file.service';
 import { GroupService } from '../group/group.service';
-import { MaterialService } from '../materials/materials.service';
+import { MaterialService } from '../material/material.service';
 import { SessionService } from '../session/session.service';
 
 @Injectable()

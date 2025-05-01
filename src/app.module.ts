@@ -31,6 +31,7 @@ import { SessionGateway } from './modules/session/session.gateway';
 import { QuizGateway } from './modules/quiz/quiz.gateway';
 import { QuizModule } from './modules/quiz/quiz.module';
 import { QuizService } from './modules/quiz/quiz.service';
+import { MaterialModule } from './modules/material/material.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { QuizService } from './modules/quiz/quiz.service';
     EmailModule,
     MeetingModule,
     QuizModule,
+    MaterialModule,
   ],
   controllers: [AppController],
   providers: [

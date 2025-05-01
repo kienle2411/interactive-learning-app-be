@@ -3,7 +3,7 @@ import { UpdateMaterialDto } from './dto/update-material.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
-import { MaterialService } from './materials.service';
+import { MaterialService } from './material.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @ApiBearerAuth()
@@ -26,7 +26,7 @@ export class MaterialController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getMaterialInformation(@Param() materialId: string) {
+  async getMaterialInformation(@Param('id') materialId: string) {
     return await this.materialService.getMaterialInformation(materialId);
   }
 }

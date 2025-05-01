@@ -11,7 +11,7 @@ import { DropboxService } from '../dropbox/dropbox.service';
 import { CloudinaryService } from '@/modules/cloudinary/cloudinary.service';
 import { FileService } from '../file/file.service';
 import { GroupService } from '../group/group.service';
-import { MaterialService } from '../materials/materials.service';
+import { MaterialService } from '../material/material.service';
 
 @Module({
   providers: [

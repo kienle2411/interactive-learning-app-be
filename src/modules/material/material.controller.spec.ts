@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MaterialController } from './materials.controller';
+import { MaterialController } from './material.controller';
 
-describe('MaterialsController', () => {
+describe('MaterialController', () => {
   let controller: MaterialController;
 
   beforeEach(async () => {
