@@ -72,4 +72,13 @@ export class QuizController {
   async submitQuiz(@Param('id') quizAttemptId: string) {
     return await this.quizService.submitQuiz(quizAttemptId);
   }
+
+  @Post(':id/leave')
+  @UseGuards(JwtAuthGuard)
+  async leaveQuiz(@Param('id') quizId: string, @Req() req: Request) {
+    const studentId = await this.userService.getStudentIdByUserId(
+      req.user['sub'],
+    );
+    return await this.quizService.leaveQuiz(quizId, studentId);
+  }
 }

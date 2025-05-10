@@ -1,25 +1,10 @@
-import {
-  Controller,
-  Post,
-  UseGuards,
-  Get,
-  Body,
-  Req,
-  UseInterceptors,
-  UseFilters,
-  UsePipes,
-  ValidationPipe,
-} from '@nestjs/common';
+import { Controller, Post, UseGuards, Get, Body, Req } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { Public } from './decorators/public.decorator';
 import { CreateUserDto } from '../user/dto/create-user.dto';
 import { AuthDto } from './dto/auth.dto';
 import { Request } from 'express';
 import { RefreshTokenGuard } from './guards/refresh-token.guard';
-import { HttpExceptionFilter } from '@/common/utils/exception-filter';
-import { TransformInterceptor } from '@/common/interceptors/transform.interceptor';
-import { GlobalExceptionFilter } from '@/common/filters/global-exception.filter';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @Controller('auth')

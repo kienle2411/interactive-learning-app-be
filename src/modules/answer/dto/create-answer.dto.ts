@@ -1,4 +1,5 @@
-import { AnswerType } from '@prisma/client';
+import { AnswerSource } from '@/common/utils/answer-source';
+import { Answer, AnswerType } from '@prisma/client';
 import {
   IsBoolean,
   IsEnum,
@@ -24,11 +25,10 @@ export class CreateAnswerDto {
   @IsOptional()
   text?: string;
 
-  @IsBoolean()
-  @IsOptional()
-  isCorrect?: boolean;
-
   @IsOptional()
   @IsString()
   selectedOptionId?: string;
+
+  @IsNotEmpty()
+  answerSource: AnswerSource;
 }

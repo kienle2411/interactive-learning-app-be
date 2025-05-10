@@ -41,6 +41,25 @@ export class QuizService {
     });
   }
 
+  async leaveQuiz(quizId: string, studentId: string) {
+    const quizAttempt = await this.prisma.quizAttempt.findFirst({
+      where: {
+        quizId: quizId,
+        studentId: studentId,
+        endTime: null,
+      },
+    });
+    if (!quizAttempt) {
+      throw new Error('Quiz attempt not found');
+    }
+    return await this.prisma.quizAttempt.update({
+      where: { id: quizAttempt.id },
+      data: {
+        endTime: new Date(),
+      },
+    });
+  }
+
   async submitQuiz(quizAttemptId: string) {
     return await this.prisma.quizAttempt.update({
       where: { id: quizAttemptId },
@@ -60,5 +79,51 @@ export class QuizService {
         question: true,
       },
     });
+  }
+
+  async getLeaderboard(quizId: string) {
+    const attempts = await this.prisma.quizAttempt.groupBy({
+      by: ['studentId'],
+      where: {
+        quizId: quizId,
+      },
+      _count: {
+        _all: true,
+      },
+    });
+    const students = await this.prisma.student.findMany({
+      where: {
+        id: {
+          in: attempts.map((attempt) => attempt.studentId),
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+    const users = await this.prisma.user.findMany({
+      where: {
+        id: {
+          in: students.map((student) => student.id),
+        },
+      },
+      select: {
+        id: true,
+        username: true,
+      },
+    });
+    return attempts
+      .map((attempt) => {
+        const student = students.find(
+          (student) => student.id === attempt.studentId,
+        );
+        const user = users.find((user) => user.id === student.id);
+        return {
+          studentId: attempt.studentId,
+          username: user.username,
+          score: attempt._count._all,
+        };
+      })
+      .sort((a, b) => b.score - a.score);
   }
 }
