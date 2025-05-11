@@ -15,10 +15,6 @@ export class CreateQuizDto {
   @IsOptional()
   description?: string;
 
-  @IsBoolean()
-  @IsNotEmpty()
-  isPublic: boolean;
-
   @IsNumber()
   @IsNotEmpty()
   timeLimit: number;
