@@ -15,17 +15,18 @@ export class QuestionService {
 
   async createQuestion(userId: string, createQuestionDto: CreateQuestionDto) {
     const teacherId = await this.userService.getTeacherIdByUserId(userId);
+    const { linkedId, linkedType, ...questionData } = createQuestionDto;
     const question = await this.prisma.question.create({
       data: {
-        ...createQuestionDto,
+        ...questionData,
         teacherId: teacherId,
       },
     });
     await this.prisma.questionLink.create({
       data: {
         questionId: question.id,
-        linkedId: createQuestionDto.linkedId,
-        linkedType: createQuestionDto.linkedType,
+        linkedId: linkedId,
+        linkedType: linkedType,
       },
     });
     return question;

@@ -124,7 +124,11 @@ export class AnswerService {
     }
     return await this.prisma.answer.create({
       data: {
-        ...createAnswerDto,
+        contextId: createAnswerDto.contextId,
+        questionId: createAnswerDto.questionId,
+        selectedOptionId: createAnswerDto.selectedOptionId,
+        text: createAnswerDto.text,
+        type: createAnswerDto.type,
         createdBy: studentId,
         score: score,
         isCorrect: isCorrect,

@@ -31,6 +31,5 @@ export class CreateAnswerDto {
   selectedOptionId?: string;
 
   @IsNotEmpty()
-  @Exclude()
   answerSource: AnswerSource;
 }
