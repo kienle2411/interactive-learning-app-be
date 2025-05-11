@@ -15,8 +15,12 @@ export class CreateQuestionDto {
   content: string;
 
   @IsNumber()
-  @IsNotEmpty()
-  time: number;
+  @IsOptional()
+  timeLimit?: number;
+
+  @IsNumber()
+  @IsOptional()
+  score?: number;
 
   @IsEnum(QuestionType)
   @IsNotEmpty()
