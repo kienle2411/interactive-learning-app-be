@@ -47,6 +47,9 @@ export class QuestionService {
   async getQuestionInformation(questionId: string) {
     return this.prisma.question.findUnique({
       where: { id: questionId },
+      include: {
+        QuestionOption: true,
+      },
     });
   }
 
