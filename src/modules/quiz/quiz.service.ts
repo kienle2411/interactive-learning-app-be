@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateQuizDto } from './dto/create-quiz.dto';
 import { PrismaService } from '@/prisma.service';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { PaginationHelper } from '@/common/helpers';
 
 @Injectable()
 export class QuizService {
@@ -125,5 +126,13 @@ export class QuizService {
         };
       })
       .sort((a, b) => b.score - a.score);
+  }
+
+  async getAllQuizzes(teacherId: string, page: number = 1, limit: number = 0) {
+    return PaginationHelper.paginate(
+      this.prisma.quiz,
+      { teacherId: teacherId },
+      { page, limit },
+    );
   }
 }

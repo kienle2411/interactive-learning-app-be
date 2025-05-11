@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -17,12 +18,12 @@ import { CreateQuizDto } from './dto/create-quiz.dto';
 import { UserService } from '../user/user.service';
 import { Request } from 'express';
 import { UpdateQuizDto } from './dto/update-quiz.dto';
+import { PaginationParams } from '@/common/helpers';
 
 @Controller('quiz')
 export class QuizController {
   constructor(
     private readonly quizService: QuizService,
-    private readonly prisma: PrismaService,
     private readonly userService: UserService,
   ) {}
 
@@ -34,6 +35,19 @@ export class QuizController {
       req.user['sub'],
     );
     return await this.quizService.createQuiz(teacherId, createQuizDto);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getAllQuizzes(
+    @Req() req: Request,
+    @Query() pagination: PaginationParams,
+  ) {
+    const { page, limit } = pagination;
+    const teacherId = await this.userService.getTeacherIdByUserId(
+      req.user['sub'],
+    );
+    return await this.quizService.getAllQuizzes(teacherId, page, limit);
   }
 
   @Patch(':id')
