@@ -1,5 +1,6 @@
 import { AnswerSource } from '@/common/utils/answer-source';
 import { Answer, AnswerType } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import {
   IsBoolean,
   IsEnum,
@@ -30,5 +31,6 @@ export class CreateAnswerDto {
   selectedOptionId?: string;
 
   @IsNotEmpty()
+  @Exclude()
   answerSource: AnswerSource;
 }
