@@ -1,4 +1,5 @@
 import { LinkedType, QuestionType } from '@prisma/client';
+import { Exclude } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
@@ -28,9 +29,11 @@ export class CreateQuestionDto {
 
   @IsString()
   @IsNotEmpty()
+  @Exclude()
   linkedId: string;
 
   @IsEnum(LinkedType)
   @IsNotEmpty()
+  @Exclude()
   linkedType: LinkedType;
 }
