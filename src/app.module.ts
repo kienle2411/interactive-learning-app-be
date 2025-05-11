@@ -32,6 +32,10 @@ import { QuizGateway } from './modules/quiz/quiz.gateway';
 import { QuizModule } from './modules/quiz/quiz.module';
 import { QuizService } from './modules/quiz/quiz.service';
 import { MaterialModule } from './modules/material/material.module';
+import { AuthService } from './modules/auth/auth.service';
+import { UserService } from './modules/user/user.service';
+import { TeacherService } from './modules/teacher/teacher.service';
+import { StudentService } from './modules/student/students.service';
 
 @Module({
   imports: [
@@ -75,6 +79,10 @@ import { MaterialModule } from './modules/material/material.module';
     QuizService,
     SessionGateway,
     QuizGateway,
+    AuthService,
+    UserService,
+    TeacherService,
+    StudentService,
   ],
 })
 export class AppModule {}
