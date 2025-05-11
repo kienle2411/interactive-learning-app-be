@@ -156,6 +156,16 @@ export class ClassroomService {
           classroomId: true,
           student: {
             include: {
+              user: {
+                select: {
+                  id: true,
+                  username: true,
+                  email: true,
+                  firstName: true,
+                  lastName: true,
+                  dateOfBirth: true,
+                },
+              },
               StudentGroup: {
                 include: {
                   group: true,
