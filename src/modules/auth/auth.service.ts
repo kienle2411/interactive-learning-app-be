@@ -148,4 +148,15 @@ export class AuthService {
     const hashedPassword = await this.passwordService.hashPassword(password);
     return await this.userService.update(userId, { password: hashedPassword });
   }
+
+  async validateToken(token: string) {
+    try {
+      const decoded = await this.jwtService.verifyAsync(token, {
+        secret: this.configService.get<string>('JWT'),
+      });
+      return decoded;
+    } catch (error) {
+      throw new ForbiddenException('Invalid token');
+    }
+  }
 }
