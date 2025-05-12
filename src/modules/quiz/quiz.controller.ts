@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -94,5 +95,12 @@ export class QuizController {
       req.user['sub'],
     );
     return await this.quizService.leaveQuiz(quizId, studentId);
+  }
+
+  @Delete(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles('teacher')
+  async deleteQuiz(@Param('id') quizId: string) {
+    return await this.quizService.deleteQuiz(quizId);
   }
 }

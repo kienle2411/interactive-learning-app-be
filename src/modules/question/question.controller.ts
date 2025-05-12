@@ -18,6 +18,8 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
 import { CreateQuestionOptionDto } from './dto/create-question-option.dto';
 import { create } from 'domain';
+import { UpdateQuestionOptionDto } from './dto/update-question-option.dto';
+import { Roles } from '../auth/decorators/roles.decorator';
 
 @ApiBearerAuth()
 @Controller('questions')
@@ -64,6 +66,25 @@ export class QuestionController {
       questionId,
       createQuestionOptionDto,
     );
+  }
+
+  @Patch(':id/options/:optionId')
+  @UseGuards(JwtAuthGuard)
+  async updateChoice(
+    @Param('optionId') optionId: string,
+    @Body() updateQuestionDto: UpdateQuestionOptionDto,
+  ) {
+    return await this.questionService.updateQuestionOption(
+      optionId,
+      updateQuestionDto,
+    );
+  }
+
+  @Delete(':id/options/:optionId')
+  @UseGuards(JwtAuthGuard)
+  @Roles('teacher')
+  async deleteChoice(@Param('optionId') optionId: string) {
+    return await this.questionService.deleteQuestionOption(optionId);
   }
 
   @Post(':id/answers')

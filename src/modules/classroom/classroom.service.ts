@@ -154,6 +154,10 @@ export class ClassroomService {
           id: true,
           studentId: true,
           classroomId: true,
+          score: true,
+          joinedAt: true,
+          leftAt: true,
+          deletedAt: true,
           student: {
             include: {
               user: {

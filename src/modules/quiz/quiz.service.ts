@@ -135,4 +135,30 @@ export class QuizService {
       { page, limit },
     );
   }
+
+  async deleteQuiz(quizId: string) {
+    await this.prisma.questionLink.updateMany({
+      where: {
+        linkedId: quizId,
+        linkedType: 'QUIZ',
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    await this.prisma.quizAttempt.updateMany({
+      where: {
+        quizId: quizId,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return this.prisma.quiz.update({
+      where: { id: quizId },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+  }
 }

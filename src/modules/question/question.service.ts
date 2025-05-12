@@ -5,6 +5,7 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { CreateAnswerDto } from '../answer/dto/create-answer.dto';
 import { CreateQuestionOptionDto } from './dto/create-question-option.dto';
 import { UserService } from '../user/user.service';
+import { UpdateQuestionOptionDto } from './dto/update-question-option.dto';
 
 @Injectable()
 export class QuestionService {
@@ -62,6 +63,25 @@ export class QuestionService {
         ...createQuestionOptionDto,
         questionId: questionId,
       },
+    });
+  }
+
+  async updateQuestionOption(
+    questionOptionId: string,
+    updateQuestionOptionDto: UpdateQuestionOptionDto,
+  ) {
+    return this.prisma.questionOption.update({
+      data: {
+        ...updateQuestionOptionDto,
+      },
+      where: { id: questionOptionId },
+    });
+  }
+
+  async deleteQuestionOption(questionOptionId: string) {
+    return this.prisma.questionOption.update({
+      where: { id: questionOptionId },
+      data: { deletedAt: new Date() },
     });
   }
 
