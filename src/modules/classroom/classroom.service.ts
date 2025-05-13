@@ -258,11 +258,12 @@ export class ClassroomService {
     userId: string,
     createMeetingDto: CreateMeetingDto,
   ) {
+    const teacherId = await this.userService.getTeacherIdByUserId(userId);
     return this.prisma.meeting.create({
       data: {
         ...createMeetingDto,
         classroomId,
-        hostId: userId,
+        hostId: teacherId,
         createdBy: userId,
       },
     });
