@@ -171,6 +171,9 @@ export class ClassroomService {
                 },
               },
               StudentGroup: {
+                where: {
+                  classroomId: classroomId,
+                },
                 include: {
                   group: true,
                 },

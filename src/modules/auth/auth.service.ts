@@ -44,6 +44,7 @@ export class AuthService {
   }
 
   async signIn(authDto: AuthDto) {
+    console.log(authDto);
     const user = await this.userService.findByUsername(authDto.username);
     if (!user) throw new BadRequestException('User does not exist');
     const passwordMatches = await this.passwordService.comparePassword(
@@ -54,6 +55,7 @@ export class AuthService {
       throw new BadRequestException('Password is incorrect');
     const tokens = await this.getTokens(user.id, user.username, user.role);
     await this.updateRefreshToken(user.id, tokens.refreshToken);
+    console.log(tokens.refreshToken);
     return tokens;
   }
 
@@ -113,6 +115,7 @@ export class AuthService {
       user.refreshToken,
       refreshToken,
     );
+    console.log(refreshTokenMatches);
     if (!refreshTokenMatches) {
       throw new ForbiddenException('Access Denied');
     }
