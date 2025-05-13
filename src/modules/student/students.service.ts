@@ -31,7 +31,24 @@ export class StudentService {
       this.prisma.studentClassroom,
       { studentId },
       { page, limit },
-      { select: { classroom: true } },
+      {
+        select: {
+          classroom: {
+            include: {
+              teacher: {
+                select: {
+                  user: {
+                    select: {
+                      firstName: true,
+                      lastName: true,
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     );
   }
 }
