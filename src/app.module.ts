@@ -36,6 +36,8 @@ import { AuthService } from './modules/auth/auth.service';
 import { UserService } from './modules/user/user.service';
 import { TeacherService } from './modules/teacher/teacher.service';
 import { StudentService } from './modules/student/students.service';
+import { FileController } from './modules/file/file.controller';
+import { FileService } from './modules/file/file.service';
 
 @Module({
   imports: [
@@ -60,12 +62,13 @@ import { StudentService } from './modules/student/students.service';
     QuizModule,
     MaterialModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, FileController],
   providers: [
     AppService,
     PrismaService,
     PasswordService,
     DropboxService,
+    FileService,
     {
       provide: APP_INTERCEPTOR,
       useClass: TransformInterceptor,

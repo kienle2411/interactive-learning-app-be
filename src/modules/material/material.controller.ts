@@ -5,6 +5,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { MaterialService } from './material.service';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { DropboxService } from '../dropbox/dropbox.service';
 
 @ApiBearerAuth()
 @Controller('materials')

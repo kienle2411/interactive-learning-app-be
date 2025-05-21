@@ -64,6 +64,11 @@ export class ClassroomService {
       this.prisma.material,
       { classroomId },
       { page, limit },
+      {
+        include: {
+          file: true,
+        },
+      },
     );
   }
 
@@ -168,6 +173,7 @@ export class ClassroomService {
                   firstName: true,
                   lastName: true,
                   dateOfBirth: true,
+                  avatarUrl: true,
                 },
               },
               StudentGroup: {

@@ -186,7 +186,7 @@ model Material {
 
   classroomId String
   classroom   Classroom    @relation(fields: [classroomId], references: [id])
-  File        File[]
+  file        File[]
   Assignment  Assignment[]
 }
 

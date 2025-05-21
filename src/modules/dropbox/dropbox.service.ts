@@ -31,14 +31,14 @@ export class DropboxService {
     this.dbx = new Dropbox({ auth: dbxAuth });
   }
 
-  async uploadFile(file: Express.Multer.File, userId: string): Promise<any> {
+  async uploadFile(file: Express.Multer.File, userId: string) {
     try {
       const dropboxPath = `/files/${userId}/${moment().format('yyyy-MM-DD_HH-mm-ss')}-${file.originalname}`;
       const response = await this.dbx.filesUpload({
         path: dropboxPath,
         contents: file.buffer,
       });
-      return { response };
+      return response;
     } catch (error) {
       console.error('Error uploading file to Dropbox: ', error);
       throw error;

@@ -44,7 +44,7 @@ export class ClassroomController {
 
   @Get(':id')
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('teacher')
+  @Roles('teacher', 'student')
   async getClassroomInformation(@Param('id') classroomId: string) {
     return await this.classroomService.getClassroomInformation(classroomId);
   }
@@ -119,12 +119,12 @@ export class ClassroomController {
   @Roles('teacher')
   async createClassroomMaterial(
     @Param('id') classroomId: string,
-    @Req() req,
+    @Req() req: Request,
     @Body() createMaterialDto: CreateMaterialDto,
     @UploadedFile('file') file?: Express.Multer.File,
   ) {
     return await this.classroomService.createClassroomMaterial(
-      req.user.userId,
+      req.user['sub'],
       classroomId,
       createMaterialDto,
       file,
@@ -186,16 +186,13 @@ export class ClassroomController {
   @Post(':id/sessions')
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('teacher')
+  @UseInterceptors(FileInterceptor('file'))
   async createClassroomSession(
     @Param('id') classroomId: string,
-    @Query() req: Request,
+    @Req() req: Request,
     @Body() createSessionDto: CreateSessionDto,
     @UploadedFile('file') file?: Express.Multer.File,
   ) {
-    const uploadedFile = await this.fileService.createFile(
-      file,
-      req.user['sub'],
-    );
     return await this.classroomService.createClassroomSession(
       classroomId,
       file,
