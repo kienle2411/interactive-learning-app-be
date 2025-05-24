@@ -38,6 +38,8 @@ import { TeacherService } from './modules/teacher/teacher.service';
 import { StudentService } from './modules/student/students.service';
 import { FileController } from './modules/file/file.controller';
 import { FileService } from './modules/file/file.service';
+import { MeetingService } from './modules/meeting/meeting.service';
+import { MeetingController } from './modules/meeting/meeting.controller';
 
 @Module({
   imports: [
@@ -62,7 +64,7 @@ import { FileService } from './modules/file/file.service';
     QuizModule,
     MaterialModule,
   ],
-  controllers: [AppController, FileController],
+  controllers: [AppController, FileController, MeetingController],
   providers: [
     AppService,
     PrismaService,
@@ -86,6 +88,7 @@ import { FileService } from './modules/file/file.service';
     UserService,
     TeacherService,
     StudentService,
+    MeetingService,
   ],
 })
 export class AppModule {}

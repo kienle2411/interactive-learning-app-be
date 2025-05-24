@@ -208,20 +208,20 @@ model File {
 }
 
 model Assignment {
-  id          String    @id @default(cuid())
+  id          String         @id @default(cuid())
   title       String
   description String
   startTime   DateTime
   dueTime     DateTime
-  createdAt   DateTime? @default(now())
-  updatedAt   DateTime? @updatedAt
+  createdAt   DateTime?      @default(now())
+  updatedAt   DateTime?      @updatedAt
   deletedAt   DateTime?
+  type        AssignmentType
 
   materialId String?
   material   Material? @relation(fields: [materialId], references: [id])
 
-  submission  Submission[]
-  QuizAttempt QuizAttempt[]
+  submission Submission[]
 }
 
 model Submission {
@@ -241,7 +241,7 @@ model Submission {
 
   fileId         String?
   file           File?            @relation(fields: [fileId], references: [id])
-  SubmissionFile SubmissionFile[]
+  submissionFile SubmissionFile[]
 
   @@unique([assignmentId, studentId])
 }
@@ -268,6 +268,8 @@ model Quiz {
 
   teacherId String?
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
+
+  quizAttempt QuizAttempt[]
 }
 
 model QuizAttempt {
@@ -283,7 +285,7 @@ model QuizAttempt {
   student   Student @relation(fields: [studentId], references: [id])
 
   quizId String
-  quiz   Assignment @relation(fields: [quizId], references: [id])
+  quiz   Quiz   @relation(fields: [quizId], references: [id])
 }
 
 model Question {

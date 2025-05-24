@@ -83,7 +83,6 @@ export class FileService {
       await execAsync(convertToPNGCommand);
 
       const convertedFiles = await fs.readdir(outputDir);
-      console.log('Converted files:', convertedFiles);
 
       const pngFiles = convertedFiles
         .filter((file) => file.endsWith('.png'))
