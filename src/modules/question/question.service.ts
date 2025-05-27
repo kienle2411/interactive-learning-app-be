@@ -49,7 +49,7 @@ export class QuestionService {
     return this.prisma.question.findUnique({
       where: { id: questionId },
       include: {
-        QuestionOption: true,
+        questionOption: true,
       },
     });
   }

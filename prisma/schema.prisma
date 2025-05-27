@@ -35,8 +35,8 @@ model User {
   teacher Teacher?
   student Student?
 
-  MeetingParticipant MeetingParticipant[]
-  MeetingChat        MeetingChat[]
+  meetingParticipant MeetingParticipant[]
+  meetingChat        MeetingChat[]
 }
 
 model Teacher {
@@ -49,10 +49,10 @@ model Teacher {
   createdAt DateTime    @default(now())
   updatedAt DateTime?   @updatedAt
   deletedAt DateTime?
-  Classroom Classroom[]
-  Meeting   Meeting[]
-  Quiz      Quiz[]
-  Question  Question[]
+  classroom Classroom[]
+  meeting   Meeting[]
+  quiz      Quiz[]
+  question  Question[]
 }
 
 model Student {
@@ -64,10 +64,10 @@ model Student {
   createdAt        DateTime           @default(now())
   updatedAt        DateTime?          @updatedAt
   deletedAt        DateTime?
-  Submission       Submission[]
-  StudentClassroom StudentClassroom[]
-  StudentGroup     StudentGroup[]
-  QuizAttempt      QuizAttempt[]
+  submission       Submission[]
+  studentClassroom StudentClassroom[]
+  studentGroup     StudentGroup[]
+  quizAttempt      QuizAttempt[]
 }
 
 model Classroom {
@@ -82,12 +82,12 @@ model Classroom {
 
   teacherId        String
   teacher          Teacher            @relation(fields: [teacherId], references: [id])
-  Group            Group[]
-  Session          Session[]
-  Meeting          Meeting[]
-  Material         Material[]
-  StudentClassroom StudentClassroom[]
-  StudentGroup     StudentGroup[]
+  group            Group[]
+  session          Session[]
+  meeting          Meeting[]
+  material         Material[]
+  studentClassroom StudentClassroom[]
+  studentGroup     StudentGroup[]
 }
 
 model Group {
@@ -100,7 +100,7 @@ model Group {
 
   classroomId  String
   classroom    Classroom      @relation(fields: [classroomId], references: [id])
-  StudentGroup StudentGroup[]
+  studentGroup StudentGroup[]
 }
 
 model Session {
@@ -146,8 +146,8 @@ model Meeting {
 
   hostId             String?
   host               Teacher?             @relation(fields: [hostId], references: [id])
-  MeetingParticipant MeetingParticipant[]
-  MeetingChat        MeetingChat[]
+  meetingParticipant MeetingParticipant[]
+  meetingChat        MeetingChat[]
 }
 
 model MeetingParticipant {
@@ -187,7 +187,7 @@ model Material {
   classroomId String
   classroom   Classroom    @relation(fields: [classroomId], references: [id])
   file        File[]
-  Assignment  Assignment[]
+  assignment  Assignment[]
 }
 
 model File {
@@ -201,10 +201,10 @@ model File {
 
   materialId     String?
   material       Material?        @relation(fields: [materialId], references: [id])
-  SlidePage      SlidePage[]
-  Submission     Submission[]
-  SubmissionFile SubmissionFile[]
-  Session        Session[]
+  slidePage      SlidePage[]
+  submission     Submission[]
+  submissionFile SubmissionFile[]
+  session        Session[]
 }
 
 model Assignment {
@@ -297,10 +297,10 @@ model Question {
   updatedAt      DateTime?        @updatedAt
   deletedAt      DateTime?
   score          Int?
-  QuestionLink   QuestionLink[]
-  QuestionEssay  QuestionEssay[]
-  QuestionOption QuestionOption[]
-  Answer         Answer[]
+  questionLink   QuestionLink[]
+  questionEssay  QuestionEssay[]
+  questionOption QuestionOption[]
+  answer         Answer[]
 
   teacherId String?
   teacher   Teacher? @relation(fields: [teacherId], references: [id])
@@ -338,7 +338,7 @@ model QuestionOption {
 
   questionId String
   question   Question @relation(fields: [questionId], references: [id])
-  Answer     Answer[]
+  answer     Answer[]
 
   deletedAt DateTime?
   createdAt DateTime  @default(now())

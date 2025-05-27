@@ -6,7 +6,7 @@ import { UserModule } from './modules/user/user.module';
 import { TeacherModule } from './modules/teacher/teacher.module';
 import { StudentModule } from './modules/student/student.module';
 import { ClassroomModule } from './modules/classroom/classroom.module';
-import { SessionModule } from './modules/session/sessions.module';
+import { SessionModule } from './modules/session/session.module';
 import { GroupModule } from './modules/group/group.module';
 import { AssignmentModule } from './modules/assignment/assignment.module';
 import { SubmissionModule } from './modules/submission/submission.module';
