@@ -176,7 +176,7 @@ export class ClassroomService {
                   avatarUrl: true,
                 },
               },
-              StudentGroup: {
+              studentGroup: {
                 where: {
                   classroomId: classroomId,
                 },

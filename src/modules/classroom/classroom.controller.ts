@@ -235,7 +235,10 @@ export class ClassroomController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles('student')
   async joinClassroom(@Query() code: string, @Req() req: Request) {
-    return await this.classroomService.joinClassroom(code, req.user['sub']);
+    return await this.classroomService.joinClassroom(
+      code.toString(),
+      req.user['sub'],
+    );
   }
 
   @Delete('leave')
