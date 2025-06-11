@@ -17,6 +17,9 @@ export class MeetingService {
     const meeting = await this.prisma.meeting.findUnique({
       where: { id: meetingId },
     });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
     const now = new Date();
     if (!meeting) {
       throw new Error('Meeting not found');
@@ -32,6 +35,12 @@ export class MeetingService {
       process.env.LIVEKIT_API_SECRET,
       {
         identity: userId,
+        name: user.firstName + ' ' + user.lastName,
+        metadata: JSON.stringify({
+          userId: user.id,
+          role: user.role,
+          avatar: user.avatarUrl,
+        }),
       },
     );
     at.addGrant({
